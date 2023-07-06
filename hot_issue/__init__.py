@@ -1,0 +1,1 @@
+from .update_hot_issue import UpdateHotIssue
