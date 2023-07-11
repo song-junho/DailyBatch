@@ -152,7 +152,6 @@ class UpdateMarketData:
     def update_market_data(self):
 
         dict_res = self.create_update_data()
-        print(dict_res.keys())
 
         for cmp_cd, data in tqdm(dict_res.items()):
 

@@ -1,4 +1,4 @@
-from market_data import UpdateMarketData, UpdateDaily
+from market_data import UpdateMarketData, UpdateDaily, MacroData
 from hot_issue import UpdateHotIssue
 from hot_theme import UpdateHotTheme
 
@@ -16,6 +16,9 @@ def main():
     update_daily = UpdateDaily(is_update_all)
     update_daily.run()
     del update_daily
+
+    # 업데이트: 매크로 데이터
+    MacroData().run()
 
     # 업데이트: 일별 핫이슈 종목 정보
     update_hot_issue = UpdateHotIssue()

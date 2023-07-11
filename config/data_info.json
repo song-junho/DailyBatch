@@ -1,0 +1,325 @@
+{
+    "FICC_INFO" : {
+        "fixed_income": {
+
+            "T10Y2Y": {
+                "name": "미국채 스프레드(10y-2y)"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "T10Y3M": {
+                "name": "미국채 스프레드(10y-3m)"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "T10YFF": {
+                "name": "미국채 스프레드(10y-FF)"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DGS30": {
+                "name": "미국채 (30y)"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DGS20": {
+                "name": "미국채 (20y)"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DGS10": {
+                "name": "미국채 (10y)"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DGS2": {
+                "name": "미국채 (2y)"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DGS3MO": {
+                "name": "미국채 (3M)"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "FF": {
+                "name": "Fed 기준금리"
+                , "freq": "w"
+                , "release": "fred"
+            }
+            , "BAMLHE00EHYIOAS": {
+                "name": "Euro High Yield Index"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "BAMLH0A0HYM2": {
+                "name": "US High Yield Index Option-Adjusted Spread"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "BAMLH0A2HYBEY": {
+                "name": "Single-B US High Yield Index"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "BAMLH0A1HYBBEY": {
+                "name": "BB US High Yield Index"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "BAMLH0A3HYCEY": {
+                "name": "CCC & Lower US High Yield Index"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "0101000": {"stat_cd": "722Y001", "name": "한국은행 기준금리", "freq": "d", "release": "eos"}
+            , "010190000": {"stat_cd": "817Y002", "name": "국고채(1년)", "freq": "d", "release": "eos"}
+            , "010200000": {"stat_cd": "817Y002", "name": "국고채(3년)", "freq": "d", "release": "eos"}
+            , "010200001": {"stat_cd": "817Y002", "name": "국고채(5년)", "freq": "d", "release": "eos"}
+            , "010210000": {"stat_cd": "817Y002", "name": "국고채(10년)", "freq": "d", "release": "eos"}
+            , "010220000": {"stat_cd": "817Y002", "name": "국고채(20년)", "freq": "d", "release": "eos"}
+            , "010230000": {"stat_cd": "817Y002", "name": "국고채(30년)", "freq": "d", "release": "eos"}
+            , "010300000": {"stat_cd": "817Y002", "name": "회사채(3년, AA-)", "freq": "d", "release": "eos"}
+            , "010310000": {"stat_cd": "817Y002", "name": "회사채(3년, AA-, 민평)", "freq": "d", "release": "eos"}
+            , "010320000": {"stat_cd": "817Y002", "name": "회사채(3년, BBB-)", "freq": "d", "release": "eos"}
+
+        },
+
+        "currency": {
+
+            "DTWEXBGS": {
+                "name": " U.S. Dollar Index"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DEXUSEU": {
+                "name": "U.S. Dollars to Euro Spot Exchange Rate"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DEXCHUS": {
+                "name": "Chinese Yuan Renminbi to U.S. Dollar Spot Exchange Rate"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DEXJPUS": {
+                "name": "Japanese Yen to U.S. Dollar Spot Exchange Ratee"
+                , "freq": "d"
+                , "release": "fred"
+            }
+            , "DEXKOUS": {
+                "name": "South Korean Won to U.S. Dollar Spot Exchange Rate"
+                , "freq": "d"
+                , "release": "fred"
+            }
+
+        },
+
+        "comoddity": {
+
+            "PPIACO": {
+                "name": "Producer Price Index by Commodity: All Commodities"
+                , "freq": "m"
+                , "release": "fred"
+            }
+            , "WPU0911": {
+                "name": "Producer Price Index by Commodity: Pulp, Paper, and Allied Products: Wood Pulp"
+                , "freq": "m"
+                , "release": "fred"
+            }
+            , "WPU061": {
+                "name": "Producer Price Index by Commodity: Chemicals and Allied Products: Industrial Chemicals"
+                , "freq": "m"
+                , "release": "fred"
+            }
+            , "WPU10": {
+                "name": "Producer Price Index by Commodity: Metals and Metal Products"
+                , "freq": "m"
+                , "release": "fred"
+            }
+            , "WPU012": {
+                "name": "Producer Price Index by Commodity: Farm Products: Grains"
+                , "freq": "m"
+                , "release": "fred"
+            }
+            , "PNRGINDEXM": {
+                "name": "Global price of Energy index"
+                , "freq": "m"
+                , "release": "fred"
+            }
+
+            , "GC=F": {
+                "name": "future gold"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "HRC=F": {
+                "name": "future hot_coil"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "HG=F": {
+                "name": "future copper"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "ALI=F": {
+                "name": "future aluminium"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "CL=F": {
+                "name": "future wti"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "NG=F": {
+                "name": "natural_gas"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "ZC=F": {
+                "name": "future corn"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "ZW=F": {
+                "name": "future wheat"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "ZO=F": {
+                "name": "future oat"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "ZS=F": {
+                "name": "future soybean"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "LE=F": {
+                "name": "future live_cattle"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "GF=F": {
+                "name": "future feeder_cattle"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+            , "HE=F": {
+                "name": "future hogs"
+                , "freq": "d"
+                , "release": "yahoo"
+            }
+        }
+    },
+    "ECONMIC_INFO" : {
+        "fixed_income": {
+        }
+    },
+
+    "ECONOMIC_INFO" : {
+        "global": {
+
+        }
+        ,"usa":{
+            "GDP": {
+                "name": "Gross Domestic Product"
+                , "freq": "q"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"GDPC1": {
+                "name": "Real Gross Domestic Product"
+                , "freq": "q"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"M2SL": {
+                "name": "M2"
+                , "freq": "m"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"PSAVERT": {
+                "name": "Personal Saving Rate"
+                , "freq": "m"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"UNRATE": {
+                "name": "Unemployment Rate"
+                , "freq": "m"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"CIVPART": {
+                "name": "Labor Force Participation Rate"
+                , "freq": "m"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"CPIAUCSL": {
+                "name": "Consumer Price Index for All Urban Consumers: All Items in U.S. City Average"
+                , "freq": "m"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"PCE": {
+                "name": "Personal Consumption Expenditures"
+                , "freq": "m"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"MEDCPIM158SFRBCLE": {
+                "name": "Median Consumer Price Index"
+                , "freq": "m"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"CSUSHPINSA": {
+                "name": "S&P/Case-Shiller U.S. National Home Price Index"
+                , "freq": "m"
+                , "data_type": "pct_chg_yoy"
+                , "release": "fred"
+            }
+            ,"T10YIE": {
+                "name": "10-Year Breakeven Inflation Rate"
+                , "freq": "d"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+            ,"CORESTICKM159SFRBATL": {
+                "name": "Sticky Price Consumer Price Index less Food and Energy"
+                , "freq": "m"
+                , "data_type": "pct_chg_yoy"
+                , "release": "fred"
+            }
+            ,"UMCSENT": {
+                "name": "University of Michigan: Consumer Sentiment"
+                , "freq": "m"
+                , "data_type": "raw"
+                , "release": "fred"
+            }
+        }
+        ,"korea":{
+                "SA000": {"stat_cd": "301Y017", "name": "경상수지(계절조정)", "freq": "m", "release": "eos"}
+                ,"FIEE": {"stat_cd": "901Y011", "name": "수출총액", "freq": "m", "release": "eos"}
+                ,"0": {"stat_cd": "901Y009", "name": "CPI", "freq": "m", "release": "eos"}
+                ,"*AA": {"stat_cd": "404Y014", "name": "PPI", "freq": "m", "release": "eos"}
+                ,"I351": {"stat_cd": "901Y018", "name": "기계수주액", "freq": "m", "release": "eos"}
+                ,"I35A": {"stat_cd": "901Y018", "name": "기계수주액(선박제외)", "freq": "m", "release": "eos"}
+                ,"I351BB": {"stat_cd": "901Y018", "name": "특수산업용기계", "freq": "m", "release": "eos"}
+                ,"I42A": {"stat_cd": "901Y020", "name": "건설수주총액", "freq": "m", "release": "eos"}
+                ,"ALL": {"stat_cd": "901Y105", "name": "주택건설인허가", "freq": "m", "release": "eos"}
+        }
+        ,"china":{
+
+        }
+        ,"eu":{
+
+        }
+    }
+}
