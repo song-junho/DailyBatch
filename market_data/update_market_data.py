@@ -5,9 +5,8 @@ from tqdm import tqdm
 import pickle
 from concurrent.futures import ThreadPoolExecutor, wait
 import threading
-from lib import numeric_pack
+from lib import numeric_pack, stock_pack
 import time
-import FinanceDataReader as fdr
 import random
 
 sleep_time = 10
@@ -33,7 +32,7 @@ class UpdateMarketData:
             for cmp_cd in self.dict_df_stock.keys():
                 self.dict_df_stock[cmp_cd] = pd.DataFrame()
             self.start_date = datetime.datetime(2000, 1, 1)
-            self.sleep_range = random.uniform(1, 4)  # sleep 값 범위
+            self.sleep_range = random.uniform(2, 5)  # sleep 값 범위
             self.thread_count = 15  # 멀티스레드 총 수
 
         else:
@@ -44,24 +43,14 @@ class UpdateMarketData:
         self.end_date = datetime.datetime.today()
 
         # 상장종목 리스트
-        self.list_cmp_cd = self.set_all_cmp_cd()
+        self.list_cmp_cd = stock_pack.set_all_cmp_cd(self.start_date, self.end_date)
 
     def set_all_cmp_cd(self):
 
-        df_krx_info = fdr.StockListing("KRX")
-        df_krx_info = df_krx_info[df_krx_info["Market"].isin(["KOSPI", "KOSDAQ"])]
-
-        return df_krx_info["Code"].to_list()
-
-    def date_to_str(self, v_date):
-        '''
-        datetime 형식 "YYYYMMDD" 형태 변환 -> str_date
-        :return: str_date, v_date
-        '''
-        str_date = str(v_date).split(' ')[0]
-        str_date = str_date.split('-')[0] + str_date.split('-')[1] + str_date.split('-')[2]
-
-        return (str_date, v_date)
+        max_date = numeric_pack.get_list_mkt_date(self.start_date, self.end_date)[-1]
+        list_cmp_cd = stock.get_market_ticker_list(max_date, market="KOSPI") + stock.get_market_ticker_list(max_date,
+                                                                                                            market="KOSDAQ")
+        return list_cmp_cd
 
     def create_update_data(self) -> dict:
 
@@ -141,7 +130,8 @@ class UpdateMarketData:
                     })
                 # print(v_date)
                 with _lock:
-                    dict_res[cmp_cd] = df_res[self.dict_df_stock["005930"].columns]
+                    dict_res[cmp_cd] = df_res[['StockCode', 'Open', 'High', 'Low', 'Close', 'Change', 'MarketCap',
+       'Volume', 'Market', 'V_Value']]
 
         dict_res = {}
         _lock = threading.Lock()
@@ -162,8 +152,13 @@ class UpdateMarketData:
     def update_market_data(self):
 
         dict_res = self.create_update_data()
+        print(dict_res.keys())
 
         for cmp_cd, data in tqdm(dict_res.items()):
+
+            # 신규 상장 종목 초기화
+            if cmp_cd not in self.dict_df_stock.keys():
+                self.dict_df_stock[cmp_cd] = pd.DataFrame()
 
             # 기존 데이터와 결합 후, 중복 제거(keep=업데이트)
             self.dict_df_stock[cmp_cd] = pd.concat([self.dict_df_stock[cmp_cd], data])

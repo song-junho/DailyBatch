@@ -39,8 +39,7 @@ class UpdateHotIssue:
 
         max_date = dict_df_stock["005930"].index[-1]
 
-        list_cmp_cd = stock.get_market_ticker_list(max_date, market="KOSPI") + stock.get_market_ticker_list(max_date,
-                                                                                                            market="KOSDAQ")
+        list_cmp_cd = stock.get_market_ticker_list(max_date, market="KOSPI") + stock.get_market_ticker_list(max_date, market="KOSDAQ")
 
         df_res = pd.DataFrame()
 
