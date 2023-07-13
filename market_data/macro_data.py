@@ -7,6 +7,7 @@ from PublicDataReader import Ecos
 import config
 import calendar
 from datetime import datetime
+import time
 
 
 class MacroData:
@@ -37,7 +38,19 @@ class MacroData:
         df = pd.DataFrame()
 
         if ticker_info["release"] == "fred":
-            df = self.fred.get_series(ticker)
+
+            # http 에러 간혹 발생
+            i = 0
+            while 1:
+                try:
+                    df = self.fred.get_series(ticker)
+                    break
+                except:
+                    if i >10:
+                        break
+                    else:
+                        i += 1
+                        continue
 
             # 전처리
             df = pd.DataFrame(df)

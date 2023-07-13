@@ -1,6 +1,8 @@
 from market_data import UpdateMarketData, UpdateDaily, MacroData
 from hot_issue import UpdateHotIssue
 from hot_theme import UpdateHotTheme
+from index_data.theme import theme_index
+from datetime import datetime
 
 
 def main():
@@ -27,6 +29,10 @@ def main():
 
     # 업데이트: 일별 주요 테마 정보
     UpdateHotTheme.update_hot_theme(False)
+
+    # 업데이트: 인덱스(테마)
+    theme_index.ThemeIndex(datetime(2006, 1, 1), datetime.today()).create_theme_index()
+    theme_index.ThemeChgFreq().create_chg_freq()
 
 if __name__ == "__main__":
 
