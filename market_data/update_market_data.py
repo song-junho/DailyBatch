@@ -9,8 +9,6 @@ from lib import numeric_pack, stock_pack
 import time
 import random
 
-sleep_time = 10
-
 
 class UpdateMarketData:
 
@@ -72,7 +70,7 @@ class UpdateMarketData:
                         break
                     except:
                         print("err", cmp_cd)
-                        time.sleep(sleep_time)
+                        time.sleep(random.uniform(5, 20))
                         loop_count += 1
                         if loop_count > 10:
                             break
@@ -100,7 +98,7 @@ class UpdateMarketData:
                         break
                     except:
                         print("err", cmp_cd)
-                        time.sleep(sleep_time)
+                        time.sleep(random.uniform(5, 20))
                         loop_count += 1
                         if loop_count > 10:
                             break

@@ -3,7 +3,7 @@ from hot_issue import UpdateHotIssue
 from hot_theme import UpdateHotTheme
 from index_data.theme import theme_index
 from datetime import datetime
-
+import momentum.create_fields
 
 def main():
 
@@ -21,6 +21,9 @@ def main():
 
     # 업데이트: 매크로 데이터
     MacroData().run()
+
+    # 업데이트: 모멘텀 데이터 생성 (Stock)
+    momentum.create_fields.create_stock_field()
 
     # 업데이트: 일별 핫이슈 종목 정보
     update_hot_issue = UpdateHotIssue()
