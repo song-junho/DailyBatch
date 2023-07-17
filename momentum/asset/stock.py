@@ -4,6 +4,7 @@ from tqdm import tqdm
 import pickle
 from lib.numeric_pack import *
 from lib.stock_pack import *
+from scipy import stats
 
 
 class Stock:
@@ -19,6 +20,23 @@ class Stock:
         self.list_cmp_cd = set_all_cmp_cd(list_date_eom[0])
 
         self.set_chg_period()
+
+    @ staticmethod
+    def get_z_score(df):
+
+        for col_nm in df.columns[1:6]:
+            df[col_nm] = df[col_nm].astype("float")
+            period = col_nm.split("_")[1]
+            df["z_score_" + period] = 0
+
+            x = df.loc[~df[col_nm].isna(), col_nm]
+            z_score = stats.zscore(x) / int(period)  # 근일자 가중치
+
+            df.loc[~df[col_nm].isna(), "z_score_" + period] = z_score
+
+        df["z_score_avg"] = df[df.columns[6:]].T.mean()
+
+        return df
 
     def set_chg_period(self):
 
@@ -52,5 +70,12 @@ class Stock:
                 continue
             else:
                 dict_df_stock_monthly[eom] = pd.concat(q_)
+
+        # 모멘텀 기간별 z_score 칼럼 생성
+        for eom in tqdm(date_eom):
+
+            df = dict_df_stock_monthly[eom]
+            df = self.get_z_score(df)
+            dict_df_stock_monthly[eom] = df
 
         return dict_df_stock_monthly
