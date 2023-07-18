@@ -24,15 +24,22 @@ class Stock:
     @ staticmethod
     def get_z_score(df):
 
-        for col_nm in df.columns[1:6]:
+        start_index = list(df.columns).index('period_0to5')
+        for col_nm in df.columns[start_index:start_index+6]:
             df[col_nm] = df[col_nm].astype("float")
             period = col_nm.split("_")[1]
             df["z_score_" + period] = 0
+            df = df.fillna(0)
 
-            x = df.loc[~df[col_nm].isna(), col_nm]
-            z_score = stats.zscore(x) / int(period)  # 근일자 가중치
+            len_period = int(period.split("to")[1]) - int(period.split("to")[0])
 
-            df.loc[~df[col_nm].isna(), "z_score_" + period] = z_score
+            # 일평균 수익률로 환산 후 z_score
+            x = df[col_nm]
+            x = (x + 1) ** (1 / len_period) - 1
+            z_score = stats.zscore(x)
+
+            # df.loc[~df[col_nm].isna(), "z_score_" + period] = z_score
+            df["z_score_" + period] = z_score
 
         df["z_score_avg"] = df[df.columns[6:]].T.mean()
 
@@ -45,10 +52,21 @@ class Stock:
         for cmp_cd in tqdm(self.list_cmp_cd):
 
             # call by ref -> self.dict_df_stock 변경됨
+            # 1. 누적 기간별 수익률
             df_stock = self.dict_df_stock[cmp_cd]
             for chg_period in list_chg_period:
                 col_nm = "chg_" + str(chg_period)
                 df_stock[col_nm] = df_stock["Close"].pct_change(chg_period)
+
+            # 2. 구간별 수익률
+            df_stock["period_0to5"] = df_stock["Close"].pct_change(list_chg_period[0])
+            for i, _ in enumerate(list_chg_period[:-1]):
+                col_nm = "period_" + str(list_chg_period[i]) + "to" + str(list_chg_period[i + 1])
+                period = list_chg_period[i + 1] - list_chg_period[i]
+
+                df_stock[col_nm] = 0
+                df_stock[col_nm][list_chg_period[i]:] = df_stock["Close"][:-list_chg_period[i]].pct_change(period)
+
 
     def run(self, date_eom):
 
@@ -61,7 +79,8 @@ class Stock:
 
                 try:
                     df = pd.DataFrame(self.dict_df_stock[cmp_cd].loc[eom]).T
-                    df = df[["StockCode", "chg_5", "chg_20", "chg_60", "chg_120", "chg_240"]].rename(
+                    df = df[["StockCode", "chg_5", "chg_20", "chg_60", "chg_120", "chg_240", 'period_0to5', 'period_5to20', 'period_20to60', 'period_60to120',
+       'period_120to240']].rename(
                         columns={"StockCode": "cmp_cd"})
                     q_.append(df)
                 except:
