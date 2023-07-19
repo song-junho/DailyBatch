@@ -4,6 +4,7 @@ from hot_theme import UpdateHotTheme
 from index_data.theme import theme_index
 from datetime import datetime
 import momentum.create_fields
+import lib
 
 def main():
 
@@ -18,6 +19,11 @@ def main():
     update_daily = UpdateDaily(is_update_all)
     update_daily.run()
     del update_daily
+
+    # 업데이트: 종목 마켓데이터(기간 변화율)
+    c_chg_freq = lib.StockChgFreq()
+    c_chg_freq.run()
+    del c_chg_freq
 
     # 업데이트: 매크로 데이터
     MacroData().run()
@@ -35,7 +41,11 @@ def main():
 
     # 업데이트: 인덱스(테마)
     theme_index.ThemeIndex(datetime(2006, 1, 1), datetime.today()).create_theme_index()
-    theme_index.ThemeChgFreq().create_chg_freq()
+
+    # 업데이트: 인덱스(테마)(기간 변화율)
+    c_chg_freq = lib.ThemeChgFreq()
+    c_chg_freq.run()
+    del c_chg_freq
 
 if __name__ == "__main__":
 
