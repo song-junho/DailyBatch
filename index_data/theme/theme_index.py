@@ -22,6 +22,7 @@ XKRX = ecals.get_calendar("XKRX")
 
 context = pa.default_serialization_context()
 
+
 class ThemeIndex:
 
     def __init__(self, start_date, end_date):
@@ -32,7 +33,7 @@ class ThemeIndex:
         # 테마 인덱스
         self.dict_theme_index = {}
 
-        # 테마 인덱스 (월별 구간 수익률)
+        # 테마 인덱스 (월별 구간 수익률) , strapping 용도
         self.dict_monthly_theme_index = {}
 
         # 테마 키워드
@@ -171,6 +172,28 @@ class ThemeIndex:
 
             self.dict_theme_index[theme_keyword] = df_theme_index
 
+    def save(self):
+
+        with open(r'D:\MyProject\StockPrice\DictThemeIndex.pickle', 'wb') as fw:
+            pickle.dump(self.dict_theme_index, fw)
+
+    def set_col_z_score(self):
+
+        list_theme_nm = sorted(list(self.dict_theme_index.keys()))
+        for theme_nm in tqdm(list_theme_nm):
+
+            if len(self.dict_theme_index[theme_nm]) == 0:
+                continue
+
+            list_window = [20, 40, 60, 120, 240]
+
+            for window in list_window:
+                raw = self.dict_theme_index[theme_nm]["index"]
+                avg = self.dict_theme_index[theme_nm]["index"].rolling(window=window).mean()
+                std = self.dict_theme_index[theme_nm]["index"].rolling(window=window).std()
+                self.dict_theme_index[theme_nm]["z_score_" + str(window)] = (raw - avg) / std
+
+
     def create_theme_index(self):
 
         # 테마 월별 구간 수익률 적재용 , dict_monthly_theme_index 초기화
@@ -183,70 +206,9 @@ class ThemeIndex:
         # 월별 구간 수익률 strapping
         self.index_strapping()
 
-        # 저장
-        with open(r'D:\MyProject\StockPrice\DictThemeIndex.pickle', 'wb') as fw:
-            pickle.dump(self.dict_theme_index, fw)
+    def run(self):
 
-
-class ThemeChgFreq:
-
-    '''
-    테마 월간 데이터 , 1M, 3M, 6M, 12M 주기별 변화율 저장
-    '''
-
-    def __init__(self):
-
-        with open(r'D:\MyProject\StockPrice\DictThemeIndex.pickle', 'rb') as fr:
-            self.dict_theme_index = pickle.load(fr)
-
-        self.dict_theme_chg_freq = {}
-
-
-    def preprocessing(self, df, val_nm):
-
-        df = df.resample("1M").last()
-        df = df.reset_index(drop=False)
-        df["pct_change"] = df[val_nm].pct_change()
-        df["Date"] = pd.to_datetime(df["Date"].dt.strftime("%Y-%m-%d"))
-        df = df[["Date", val_nm, "pct_change"]].rename(columns={"Date": "date", val_nm: "val"})
-        df = df.set_index("date")
-
-        return df
-
-    def save(self):
-
-        with open(r'D:\MyProject\StockPrice\DictThemeChgFreq.pickle', 'wb') as fw:
-            pickle.dump(self.dict_theme_chg_freq, fw)
-
-    def create_chg_freq(self):
-
-        list_theme_nm = list(self.dict_theme_index.keys())
-
-        # 전처리: 월간 데이터 형식
-        for key_nm in tqdm(list_theme_nm):
-            df = self.dict_theme_index[key_nm]
-            self.dict_theme_index[key_nm] = self.preprocessing(df, "index")
-
-        # 주기별 변화율 데이터 생성
-        for key_nm in tqdm(list_theme_nm):
-
-            list_tmp = []
-            for freq in [1, 3, 6, 12]:
-                df = copy.deepcopy(self.dict_theme_index[key_nm])
-                if freq == 1:
-                    df = df[["pct_change"]].rename(columns={"pct_change": str(freq) + "M"})
-                    list_tmp.append(df)
-                else:
-                    df["pct_change"] = df["val"].pct_change(freq)
-                    df = df[["pct_change"]].rename(columns={"pct_change": str(freq) + "M"})
-                    list_tmp.append(df)
-
-            df_chg = reduce(lambda left, right: pd.merge(left, right, left_index=True, right_index=True), list_tmp)
-            df = pd.DataFrame(df_chg.T.isnull().sum())
-            not_nan_date = min(df[df[0] == 0].index)
-            df_chg = df_chg.loc[not_nan_date:]
-
-            self.dict_theme_chg_freq[key_nm] = pd.merge(left=self.dict_theme_index[key_nm][["val"]], right=df_chg, left_index=True,
-                                                right_index=True)
-
+        self.create_theme_index()
+        self.set_col_z_score()
         self.save()
+

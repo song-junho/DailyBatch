@@ -1,7 +1,7 @@
 from market_data import UpdateMarketData, UpdateDaily, MacroData
 from hot_issue import UpdateHotIssue
 from hot_theme import UpdateHotTheme
-from index_data.theme import theme_index
+from index_data.theme import ThemeIndex
 from datetime import datetime
 import momentum.create_fields
 import lib
@@ -11,7 +11,7 @@ def main():
     # 업데이트: 종목 마켓데이터(key:cmp_cd)
     is_update_all = False
     update_market_data = UpdateMarketData(is_update_all)
-    update_market_data.update_market_data()
+    update_market_data.run()
     del update_market_data
 
     # 업데이트: 종목 마켓데이터(key:date)
@@ -40,7 +40,9 @@ def main():
     UpdateHotTheme.update_hot_theme(False)
 
     # 업데이트: 인덱스(테마)
-    theme_index.ThemeIndex(datetime(2006, 1, 1), datetime.today()).create_theme_index()
+    c_theme_index = ThemeIndex(datetime(2006, 1, 1), datetime.today())
+    c_theme_index.run()
+    del c_theme_index
 
     # 업데이트: 인덱스(테마)(기간 변화율)
     c_chg_freq = lib.ThemeChgFreq()

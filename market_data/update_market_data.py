@@ -156,7 +156,7 @@ class UpdateMarketData:
             self.dict_df_stock[cmp_cd] = pd.concat([self.dict_df_stock[cmp_cd], data])
             self.dict_df_stock[cmp_cd] = self.dict_df_stock[cmp_cd].reset_index().drop_duplicates("Date", keep="last").set_index("Date")
 
-    def set_col_zscore(self):
+    def set_col_z_score(self):
 
         list_cmp_cd = sorted(list(self.dict_df_stock.keys()))
         for cmp_cd in tqdm(list_cmp_cd):
@@ -180,6 +180,7 @@ class UpdateMarketData:
     def run(self):
 
         self.update_market_data()
+        self.set_col_z_score()
         self.save()
 
 
