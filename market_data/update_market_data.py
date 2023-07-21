@@ -8,6 +8,8 @@ import threading
 from lib import numeric_pack, stock_pack
 import time
 import random
+import copy
+from functools import reduce
 
 
 class UpdateMarketData:
@@ -35,20 +37,13 @@ class UpdateMarketData:
 
         else:
             self.start_date = self.dict_df_stock["005930"].index[-1]
-            self.sleep_range = random.uniform(0, 3)  # sleep 값 범위
-            self.thread_count = 5  # 멀티스레드 총 수
+            self.sleep_range = random.uniform(2, 10)  # sleep 값 범위
+            self.thread_count = 10  # 멀티스레드 총 수
 
         self.end_date = datetime.datetime.today()
 
         # 상장종목 리스트
         self.list_cmp_cd = stock_pack.set_all_cmp_cd(self.start_date, self.end_date)
-
-    def set_all_cmp_cd(self):
-
-        max_date = numeric_pack.get_list_mkt_date(self.start_date, self.end_date)[-1]
-        list_cmp_cd = stock.get_market_ticker_list(max_date, market="KOSPI") + stock.get_market_ticker_list(max_date,
-                                                                                                            market="KOSDAQ")
-        return list_cmp_cd
 
     def create_update_data(self) -> dict:
 
@@ -161,6 +156,30 @@ class UpdateMarketData:
             self.dict_df_stock[cmp_cd] = pd.concat([self.dict_df_stock[cmp_cd], data])
             self.dict_df_stock[cmp_cd] = self.dict_df_stock[cmp_cd].reset_index().drop_duplicates("Date", keep="last").set_index("Date")
 
-        # save data
+    def set_col_zscore(self):
+
+        list_cmp_cd = sorted(list(self.dict_df_stock.keys()))
+        for cmp_cd in tqdm(list_cmp_cd):
+
+            if len(self.dict_df_stock[cmp_cd]) == 0:
+                continue
+
+            list_window = [20, 40, 60, 120, 240]
+
+            for window in list_window:
+                raw = self.dict_df_stock[cmp_cd]["Close"]
+                avg = self.dict_df_stock[cmp_cd]["Close"].rolling(window=window).mean()
+                std = self.dict_df_stock[cmp_cd]["Close"].rolling(window=window).std()
+                self.dict_df_stock[cmp_cd]["z_score_" + str(window)] = (raw - avg) / std
+
+    def save(self):
+
         with open(r'D:\MyProject\StockPrice\DictDfStock.pickle', 'wb') as fw:
             pickle.dump(self.dict_df_stock, fw)
+
+    def run(self):
+
+        self.update_market_data()
+        self.save()
+
+
