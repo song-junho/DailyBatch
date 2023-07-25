@@ -170,7 +170,7 @@ class MacroData:
 
     def collect(self, macro_type):
 
-        data_info = config.DATA_INFO[macro_type]
+        data_info = config.MACRO_INFO[macro_type]
 
         for sub_class in data_info.keys():
 
