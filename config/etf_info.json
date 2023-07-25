@@ -1,0 +1,149 @@
+{
+    "BOND":{
+        "DURATION":[
+            {
+                "ticker":"ZROZ"
+                ,"name":"PIMCO 25+ Year Zero Coupon US Treasury Index ETF"
+            },{
+                "ticker":"TLT"
+                ,"name":"iShares 20+ Year Treasury Bond ETF"
+            },{
+                "ticker":"TLH"
+                ,"name":"iShares 10-20 Year Treasury Bond ETF"
+            },{
+                "ticker":"ILTB"
+                ,"name":"iShares Core 10+ Year USD Bond ETF"
+            },{
+                "ticker":"IEF"
+                ,"name":"iShares 7-10 Year Treasury Bond ETF"
+            },{
+                "ticker":"SHY"
+                ,"name":"iShares 1-3 Year Treasury Bond ETF"
+            },{
+                "ticker":"SHV"
+                ,"name":"iShares Short Treasury Bond ETF"
+            }
+
+        ],
+        "CREDIT":[
+            {
+                "ticker":"HYG"
+                ,"name":"iShares iBoxx $ High Yield Corporate Bond ETF"
+            },{
+                "ticker":"HYD"
+                ,"name":"VanEck High Yield Muni ETF"
+            },{
+                "ticker":"EMB"
+                ,"name":"iShares J.P. Morgan USD Emerging Markets Bond ETF"
+            },{
+                "ticker":"EMLC"
+                ,"name":"VanEck J. P. Morgan EM Local Currency Bond ETF"
+            }
+        ],
+        "INVERSE":[
+            {
+                "ticker":"TBT"
+                ,"name":"ProShares UltraShort 20+ Year Treasury"
+            },{
+                "ticker":"TMV"
+                ,"name":"Direxion Daily 20+ Year Treasury Bear 3x Shares"
+            },{
+                "ticker":"SJB"
+                ,"name":"ProShares Short High Yield"
+            }
+        ],
+        "LEVERAGE":[
+            {
+                "ticker":"TMF"
+                ,"name":"Direxion Daily 20+ Year Treasury Bull 3X Shares"
+            }
+        ]
+    },
+    "COMMODITY":{
+        "ENERGY":[
+            {
+                "ticker":"USO"
+                ,"name":"United States Oil Fund LP"
+            },{
+                "ticker":"UNG"
+                ,"name":"United States Natural Gas Fund LP"
+            },{
+                "ticker":"KRBN"
+                ,"name":"KraneShares Global Carbon Strategy"
+            },{
+                "ticker":"XOP"
+                ,"name":"에너지_탐사"
+            },{
+                "ticker":"FCG"
+                ,"name":"천연가스(산업)"
+            }
+        ],
+        "METAL_PRECIOUS":[
+            {
+                "ticker":"GLD"
+                ,"name":"SPDR Gold Shares"
+            },{
+                "ticker":"PPLT"
+                ,"name":"abrdn Physical Platinum Shares ETF"
+            },{
+                "ticker":"PALL"
+                ,"name":"abrdn Physical Palladium Shares ETF"
+            }
+            ,{
+                "ticker":"GDX"
+                ,"name":"금광(산업)"
+            }
+        ],
+        "METAL_INDUSTRY":[
+            {
+                "ticker":"DBB"
+                ,"name":"Invesco DB Base Metals Fund"
+            },{
+                "ticker":"CPER"
+                ,"name":"United States Copper Index Fund"
+            }
+            ,{
+                "ticker":"COPX"
+                ,"name":"구리(산업)"
+            }
+        ]
+        ,"METAL_HIGHEND":[
+            {
+                "ticker":"LIT"
+                ,"name":"Global X Lithium & Battery Tech ETF"
+            }
+            ,{
+                "ticker":"REMX"
+                ,"name":"VanEck Rare Earth/Strategic Metals ETF"
+            }
+        ]
+        ,"AGRICULTURE":[
+            {
+                "ticker":"DBA"
+                ,"name":"Invesco DB Agriculture Fund"
+            } ,
+            {
+                "ticker":"SOYB"
+                ,"name":"Teucrium Soybean Fund"
+            }
+            ,{
+                "ticker":"CORN"
+                ,"name":"Teucrium Corn Fund"
+            }
+            ,{
+                "ticker":"WEAT"
+                ,"name":"Teucrium Wheat Fund"
+            }
+            ,{
+                "ticker":"CANE"
+                ,"name":"Teucrium Sugar Fund"
+            }
+        ]
+        ,"ELSE":[
+            {
+                "ticker":"PHO"
+                ,"name":"Invesco Water Resources"
+            }
+        ]
+    }
+}
