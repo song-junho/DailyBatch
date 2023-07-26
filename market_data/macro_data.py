@@ -8,6 +8,7 @@ import config
 import calendar
 from datetime import datetime
 import time
+import db
 
 
 class MacroData:
@@ -16,22 +17,30 @@ class MacroData:
 
         self.fred = Fred(api_key=config.API_KEY["FRED"])
         self.ecos = Ecos(config.API_KEY["ECOS"])
-        self.dict_macro_data = {
+        self.dict_macro_data = {}
 
-            "FICC_INFO" : {
-                "fixed_income" : {}
-                , "currency" : {}
-                , "comoddity" : {}
-            }
+        self.df_macro_info = pd.DataFrame(columns=["category_0", "category_1", "ticker", "name", "freq", "data_type", "release"])
 
-            ,"ECONOMIC_INFO" : {
-                "global": {}
-                , "usa" : {}
-                , "korea" : {}
-                , "china" : {}
-                , "eu" : {}
-            }
-        }
+    def set_etf_info(self):
+
+        dict_macro_info = config.MACRO_INFO
+
+        for category_0 in dict_macro_info.keys():
+            for category_1 in dict_macro_info[category_0].keys():
+                for ticker, value in dict_macro_info[category_0][category_1].items():
+
+                    if "data_type" not in value.keys():
+                        value["data_type"] = "raw"
+
+                    self.df_macro_info = self.df_macro_info.append({
+                        "category_0": category_0,
+                        "category_1": category_1,
+                        "ticker": ticker,
+                        "name": value["name"],
+                        "freq": value["freq"],
+                        "data_type": value["data_type"],
+                        "release": value["release"],
+                    }, ignore_index=True)
 
     def get_data(self, ticker, ticker_info):
 
@@ -106,12 +115,11 @@ class MacroData:
                 product_key = ticker.split("_")[0]
                 type_key = ticker.split("_")[1]
 
+                # 재고/출하 지표 생성
                 if type_key == "T00":
 
-                    df = self.dict_macro_data["ECONOMIC_INFO"]["korea"]
-
-                    df_0 = df[product_key + "_" + "T41"].reset_index()
-                    df_1 = df[product_key + "_" + "T42"].reset_index()
+                    df_0 = self.dict_macro_data[product_key + "_" + "T41"].reset_index()
+                    df_1 = self.dict_macro_data[product_key + "_" + "T42"].reset_index()
 
                     df_merge = pd.merge(left=df_0, right=df_1, on="date", how="left")
                     df_merge["ratio"] = df_merge["val_y"] / df_merge["val_x"]
@@ -177,15 +185,20 @@ class MacroData:
             for ticker in tqdm(data_info[sub_class].keys()):
                 ticker_info = data_info[sub_class][ticker]
                 df = self.get_data(ticker, ticker_info)
-                self.dict_macro_data[macro_type][sub_class][ticker] = df
+                self.dict_macro_data[ticker] = df
 
     def save(self):
 
         with open(r"D:\MyProject\MyData\MacroData\MacroData.pickle", 'wb') as fw:
             pickle.dump(self.dict_macro_data, fw)
 
+        self.df_macro_info.to_sql(name='macro_info', con=db.conn, if_exists='append', index=False, schema='financial_data')
+
     def run(self):
 
+        print("[STRAT]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)
+        self.set_etf_info()
         self.collect("FICC_INFO")
         self.collect("ECONOMIC_INFO")
         self.save()
+        print("[END]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)
