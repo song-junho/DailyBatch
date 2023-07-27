@@ -32,12 +32,12 @@ class UpdateMarketData:
             for cmp_cd in self.dict_df_stock.keys():
                 self.dict_df_stock[cmp_cd] = pd.DataFrame()
             self.start_date = datetime.datetime(2000, 1, 1)
-            self.sleep_range = random.uniform(2, 5)  # sleep 값 범위
+            self.sleep_range = [2, 5]  # sleep 값 범위
             self.thread_count = 15  # 멀티스레드 총 수
 
         else:
             self.start_date = self.dict_df_stock["005930"].index[-1]
-            self.sleep_range = random.uniform(2, 10)  # sleep 값 범위
+            self.sleep_range = [1, 6]  # sleep 값 범위
             self.thread_count = 10  # 멀티스레드 총 수
 
         self.end_date = datetime.datetime.today()
@@ -59,7 +59,7 @@ class UpdateMarketData:
 
                 loop_count = 0
                 while(1):
-                    time.sleep(self.sleep_range)
+                    time.sleep(random.uniform(self.sleep_range[0], self.sleep_range[1]))
                     try:
                         df = stock.get_market_cap_by_date(start_date, end_date, cmp_cd)
                         break
@@ -86,7 +86,7 @@ class UpdateMarketData:
 
                 loop_count = 0
                 while (1):
-                    time.sleep(self.sleep_range)
+                    time.sleep(random.uniform(self.sleep_range[0], self.sleep_range[1]))
                     try:
                         df = stock.get_market_ohlcv_by_date(start_date, end_date, cmp_cd, adjusted=True)
                         df = numeric_pack.price_to_adj_price(df)  # 수정주가 변환
