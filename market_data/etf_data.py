@@ -62,7 +62,7 @@ class EtfData:
         with open(r"D:\MyProject\MyData\MacroData\EtfData.pickle", 'wb') as fw:
             pickle.dump(self.dict_etf_data, fw)
 
-        self.df_etf_info.to_sql(name='etf_info', con=db.conn, if_exists='append', index=False, schema='financial_data')
+        self.df_etf_info.to_sql(name='etf_info', con=db.conn, if_exists='replace', index=False, schema='financial_data')
 
     def run(self):
 

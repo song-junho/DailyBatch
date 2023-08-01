@@ -192,7 +192,7 @@ class MacroData:
         with open(r"D:\MyProject\MyData\MacroData\MacroData.pickle", 'wb') as fw:
             pickle.dump(self.dict_macro_data, fw)
 
-        self.df_macro_info.to_sql(name='macro_info', con=db.conn, if_exists='append', index=False, schema='financial_data')
+        self.df_macro_info.to_sql(name='macro_info', con=db.conn, if_exists='replace', index=False, schema='financial_data')
 
     def run(self):
 
