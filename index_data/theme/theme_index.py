@@ -108,9 +108,9 @@ class ThemeIndex:
             elif len(df_stock) == 0:
                 continue
             else:
-                df_stock["Close"] = df_stock["Close"] / df_stock["Close"].iloc[0]
+                df_stock[cmp_cd] = df_stock["Close"] / df_stock["Close"].iloc[0]
 
-            monthly_index.append(df_stock[["Close"]])
+            monthly_index.append(df_stock[[cmp_cd]])
 
         if len(monthly_index) == 0:
             return

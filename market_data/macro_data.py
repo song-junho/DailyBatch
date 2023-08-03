@@ -32,15 +32,17 @@ class MacroData:
                     if "data_type" not in value.keys():
                         value["data_type"] = "raw"
 
-                    self.df_macro_info = self.df_macro_info.append({
-                        "category_0": category_0,
-                        "category_1": category_1,
-                        "ticker": ticker,
-                        "name": value["name"],
-                        "freq": value["freq"],
-                        "data_type": value["data_type"],
-                        "release": value["release"],
-                    }, ignore_index=True)
+                    df = pd.DataFrame({
+                        "category_0": [category_0],
+                        "category_1": [category_1],
+                        "ticker": [ticker],
+                        "name": [value["name"]],
+                        "freq": [value["freq"]],
+                        "data_type": [value["data_type"]],
+                        "release": [value["release"]],
+                    })
+
+                    self.df_macro_info = pd.concat([self.df_macro_info, df])
 
     def get_data(self, ticker, ticker_info):
 

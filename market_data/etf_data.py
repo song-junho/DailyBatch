@@ -31,12 +31,15 @@ class EtfData:
                     ticker = value["ticker"]
                     name = value["name"]
 
-                    self.df_etf_info = self.df_etf_info.append({
-                        "category_0": category_0,
-                        "category_1": category_1,
-                        "ticker": ticker,
-                        "name": name
-                    }, ignore_index=True)
+                    df = pd.DataFrame(
+                        {
+                            "category_0": [category_0],
+                            "category_1": [category_1],
+                            "ticker": [ticker],
+                            "name": [name]
+                        }
+                    )
+                    self.df_etf_info = pd.concat([self.df_etf_info, df])
 
     def get_data(self, ticker):
 
