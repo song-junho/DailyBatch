@@ -86,7 +86,7 @@ class ThemeIndex:
             df_stock = df_stock.loc[som:eom]
             df_stock = df_stock[df_stock["Volume"] > 0]
 
-            db.redis_client.set(key_nm, context.serialize(df_stock).to_buffer().to_pybytes(), timedelta(minutes=3))
+            db.redis_client.set(key_nm, context.serialize(df_stock).to_buffer().to_pybytes(), timedelta(minutes=10))
         else:
             df_stock = context.deserialize(db.redis_client.get(key_nm))
 

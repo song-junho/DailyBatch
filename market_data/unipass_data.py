@@ -7,7 +7,8 @@ from dateutil.relativedelta import relativedelta
 import config
 import calendar
 from datetime import datetime
-import time
+import requests
+from bs4 import BeautifulSoup
 import db
 
 
@@ -15,157 +16,89 @@ class UnipassData:
 
     def __init__(self, is_update_all=False):
 
-        self.dict_data = {}
         self.dict_info = config.UNIPASS_INFO
-
         self.df_info = pd.DataFrame(columns=["sector", "sector_sub", "code", "name"])
 
         if is_update_all:
             self.date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
+            self.date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), self.date_range))
+            self.df_data = pd.DataFrame()
         else:
             start_date = datetime.today() - relativedelta(year=1)
             self.date_range = pd.date_range(start_date, datetime.today(), freq='M')
+            self.date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), self.date_range))
+            self.df_data = self.load()  # 기 데이터 로드
+
 
     def set_info(self):
 
         self.df_info = pd.DataFrame(self.dict_info).T.reset_index()
         self.df_info = self.df_info.rename(columns={"index": "name"})[["sector", "sector_sub", "code", "name"]]
 
-    def get_data(self, ticker, ticker_info):
+    def get_data(self, list_hs_code, ticker_info):
 
-        df = pd.DataFrame()
+        df_trade_data = pd.DataFrame(
+            columns=["code", "statkor", "date", "export_amt", "import_amt", "export_price", "import_price"])
 
-        if ticker_info["release"] == "fred":
+        dict_trade_data = {
+            "code": []
+            , "statkor": []
+            , "date": []
+            , "export_amt": []
+            , "import_amt": []
+            , "export_price": []
+            , "import_price": []
+        }
 
-            # http 에러 간혹 발생
-            i = 0
-            while 1:
-                try:
-                    df = self.fred.get_series(ticker)
-                    break
-                except:
-                    if i >10:
-                        break
-                    else:
-                        i += 1
+        for hs_code in tqdm(list_hs_code):
+
+            name = self.df_info.loc[self.df_info["code"] == hs_code, "name"].values[0]
+
+            for date_index in range(1, 240, 12):
+
+                start_yymm = self.date_range[-date_index - 11]
+                end_yymm = self.date_range[-date_index]
+                print(name, start_yymm, end_yymm)
+
+                req_url = f'https://apis.data.go.kr/1220000/Itemtrade/getItemtradeList?serviceKey={config.API_KEY["UNIPASS"]}&strtYymm={start_yymm}&endYymm={end_yymm}&hsSgn={hs_code}'
+                r = requests.get(req_url)
+
+                soup = BeautifulSoup(r.text, "xml")
+                items = soup.find_all("item")
+                for item in items:
+
+                    statkor = item.find("statKor").get_text()
+                    t_date = item.find("year").get_text()
+                    expdlr = int(item.find("expDlr").get_text())
+                    expwgt = int(item.find("expWgt").get_text())
+                    impdlr = int(item.find("impDlr").get_text())
+                    impwgt = int(item.find("impWgt").get_text())
+
+                    if t_date == "총계":
                         continue
+                    else:
+                        year = int(t_date.split('.')[0])
+                        month = int(t_date.split('.')[1])
+                        day = calendar.monthrange(year, month)[1]
 
-            # 전처리
-            df = pd.DataFrame(df)
-            df.index.name = 'date'
-            df = df.rename(columns={0: 'val'})
+                        t_date = datetime(year, month, day)
 
-            # 일자 eom 형식으로 전처리
-            if ticker_info["freq"] != "d":
-                df = df.reset_index()
-                df["date"] = df["date"].apply(lambda x: x.strftime('%Y%m%d'))
-                df["date"] = df["date"].apply(
-                    lambda x: x[:4] + "-" + x[4:6] + "-" + str(calendar.monthrange(int(x[:4]), int(x[4:6]))[1]))
-                df["date"] = pd.to_datetime(df["date"])
-                df = df.drop_duplicates("date", keep="last")
+                    exp_price = expdlr / expwgt if (expdlr != 0) & (expwgt != 0) else 0
+                    imp_price = impdlr / impwgt if (impdlr != 0) & (impwgt != 0) else 0
 
-                df = df.set_index('date')
+                    dict_trade_data["code"].append(hs_code)
+                    dict_trade_data["statkor"].append(statkor)
+                    dict_trade_data["date"].append(t_date)
+                    dict_trade_data["export_amt"].append(expdlr)
+                    dict_trade_data["import_amt"].append(impdlr)
+                    dict_trade_data["export_price"].append(exp_price)
+                    dict_trade_data["import_price"].append(imp_price)
 
-        elif ticker_info["release"] == "yahoo":
-            df = yf.Ticker(ticker).history(period="max")
+        df_trade_data = pd.concat([df_trade_data, pd.DataFrame(dict_trade_data)])
 
-            # 전처리
-            df = df.reset_index(drop=False)
-            df["Date"] = pd.to_datetime(df["Date"].dt.strftime("%Y-%m-%d"))
-            df = df[["Date", "Close"]].rename(columns={"Date": "date", "Close": "val"})
-            df = df.set_index("date")
+        return df_trade_data
 
-        elif ticker_info["release"] == "eos":
-
-            today = datetime.today()
-            time.sleep(0.5)
-
-            if ticker_info["freq"] == "d":
-
-                start_date = '20000101'
-
-                end_date = str(today.year) + str(today.month).zfill(2) + str(today.day).zfill(2)
-
-            elif ticker_info["freq"] == "m":
-
-                start_date = '200001'
-
-                end_date = str(today.year) + str(today.month).zfill(2)
-
-            elif ticker_info["freq"] == "q":
-
-                start_date = '2000Q1'
-
-                end_date = str(today.year + 1) + "Q4"
-
-            # 품목별 수출 데이터인 경우
-            if ticker_info["stat_cd"] == "901Y039":
-
-                product_key = ticker.split("_")[0]
-                type_key = ticker.split("_")[1]
-
-                # 재고/출하 지표 생성
-                if type_key == "T00":
-
-                    df_0 = self.dict_macro_data[product_key + "_" + "T41"].reset_index()
-                    df_1 = self.dict_macro_data[product_key + "_" + "T42"].reset_index()
-
-                    df_merge = pd.merge(left=df_0, right=df_1, on="date", how="left")
-                    df_merge["ratio"] = df_merge["val_y"] / df_merge["val_x"]
-                    df = df_merge[["date", "ratio"]].rename(columns={"ratio": "val"})
-                    df["date"] = df["date"].apply(lambda x: x.strftime("%Y%m"))
-
-                else:
-
-                    df = self.ecos.get_statistic_search(통계표코드=ticker_info["stat_cd"], 통계항목코드1=product_key,
-                                                        통계항목코드2=type_key, 주기="M",
-                                                        검색시작일자=start_date, 검색종료일자=end_date)
-
-                    df = df[["시점", "값"]].rename(columns={"시점": "date", "값": "val"})
-
-                    df["val"] = df["val"].astype("float")
-
-            else:
-
-                df = self.ecos.get_statistic_search(통계표코드=ticker_info["stat_cd"], 통계항목코드1=ticker,
-                                                    주기=ticker_info["freq"].upper(),
-                                                    검색시작일자=start_date, 검색종료일자=end_date)
-
-                df = df[["시점", "값"]].rename(columns={"시점": "date", "값": "val"})
-
-                df["val"] = df["val"].astype("float")
-
-            # 일자 데이터 형변환
-            if (ticker_info["freq"] == "d") or (ticker_info["freq"] == "m"):
-
-                df["date"] = df["date"].apply(
-                    lambda x: x[:4] + "-" + x[4:6] + "-" + str(calendar.monthrange(int(x[:4]), int(x[4:6]))[1]))
-
-                df["date"] = pd.to_datetime(df["date"])
-
-            elif ticker_info["freq"] == "q":
-
-                pass
-
-            df = df.drop_duplicates("date", keep="last")
-            df = df.set_index("date")
-
-        # yoy 변화값 추가
-        if ticker_info["freq"] == "m":
-            # 월간 데이터의 경우 기본으로  yoy 비교 데이터를 넣는다.
-            # 대부분 economic 데이터인데, 원데이터 자체를 분석에 활용하기 부적절하기 떄문
-            # 기본 raw data 타입이 'rate' , 'sentiment' 같은 부류인 경우는 yoy가 필요하진 않다.
-            df["pct_chg"] = df["val"].pct_change(12)
-
-        if ticker_info["freq"] == "q":
-            # 월간 데이터의 경우 기본으로  yoy 비교 데이터를 넣는다.
-            # 대부분 economic 데이터인데, 원데이터 자체를 분석에 활용하기 부적절하기 떄문
-            # 기본 raw data 타입이 'rate' , 'sentiment' 같은 부류인 경우는 yoy가 필요하진 않다.
-            df["pct_chg"] = df["val"].pct_change(4)
-
-        return df
-
-    def collect(self, macro_type):
+    def collect(self):
 
         thread_count = 10
         list_hs_code = self.df_info["code"].to_list()
@@ -180,12 +113,23 @@ class UnipassData:
                 threads.append(executor.submit(self.get_data, nest, self.date_range))
             wait(threads)
 
-        df_trade_data = pd.concat([x.result() for x in threads])
+        df_data = pd.concat([x.result() for x in threads])
+
+        df_data = df_data.groupby(["code", "date"]).sum().reset_index()
+        df_data = df_data.drop(columns=["statkor"])
+        df_data = pd.merge(left=df_data, right=self.df_info, on="code", how="left")
+
+        self.df_data = pd.concat([self.df_data, df_data]).drop_duplicates(["sector", "code", "date"])
+
+    def load(self):
+
+        with open(r"D:\MyProject\MyData\MacroData\UnipassData.pickle", 'rb') as fr:
+            return pickle.load(fr)
 
     def save(self):
 
         with open(r"D:\MyProject\MyData\MacroData\UnipassData.pickle", 'wb') as fw:
-            pickle.dump(self.dict_data, fw)
+            pickle.dump(self.df_data, fw)
 
         self.df_info.to_sql(name='unipass_info', con=db.conn, if_exists='replace', index=False, schema='financial_data')
 
@@ -193,6 +137,6 @@ class UnipassData:
 
         print("[STRAT]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)
         self.set_info()
-        self.collect("FICC_INFO")
+        self.collect()
         self.save()
         print("[END]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)
