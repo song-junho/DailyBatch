@@ -24,7 +24,7 @@ class UnipassData:
             self.date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), self.date_range))
             self.df_data = pd.DataFrame()
         else:
-            start_date = datetime.today() - relativedelta(year=1)
+            start_date = datetime.today() - relativedelta(years=1)
             self.date_range = pd.date_range(start_date, datetime.today(), freq='M')
             self.date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), self.date_range))
             self.df_data = self.load()  # 기 데이터 로드
@@ -54,7 +54,7 @@ class UnipassData:
 
             name = self.df_info.loc[self.df_info["code"] == hs_code, "name"].values[0]
 
-            for date_index in range(1, 240, 12):
+            for date_index in range(1, len(self.date_range), 12):
 
                 start_yymm = self.date_range[-date_index - 11]
                 end_yymm = self.date_range[-date_index]
