@@ -16,7 +16,7 @@ class UnipassData:
 
     def __init__(self, is_update_all=False):
 
-        self.dict_info = config.UNIPASS_INFO
+        self.dict_info = config.UNIPASS_INFO["raw"]
         self.df_info = pd.DataFrame(columns=["sector", "sector_sub", "code", "name"])
 
         if is_update_all:
