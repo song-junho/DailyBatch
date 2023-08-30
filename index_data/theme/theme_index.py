@@ -86,7 +86,11 @@ class ThemeIndex:
             df_stock = df_stock.loc[som:eom]
             df_stock = df_stock[df_stock["Volume"] > 0]
 
-            db.redis_client.set(key_nm, context.serialize(df_stock).to_buffer().to_pybytes(), timedelta(minutes=10))
+            # redis 에러 이슈..
+            try:
+                db.redis_client.set(key_nm, context.serialize(df_stock).to_buffer().to_pybytes(), timedelta(minutes=20))
+            except:
+                pass
         else:
             df_stock = context.deserialize(db.redis_client.get(key_nm))
 
@@ -208,6 +212,7 @@ class ThemeIndex:
 
     def run(self):
 
+        db.redis_client.flushdb()
         self.create_theme_index()
         self.set_col_z_score()
         self.save()
