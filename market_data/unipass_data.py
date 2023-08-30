@@ -35,7 +35,7 @@ class UnipassData:
         self.df_info = pd.DataFrame(self.dict_info).T.reset_index()
         self.df_info = self.df_info.rename(columns={"index": "name"})[["sector", "sector_sub", "code", "name"]]
 
-    def get_data(self, list_hs_code, ticker_info):
+    def get_data(self, list_hs_code):
 
         df_trade_data = pd.DataFrame(
             columns=["code", "statkor", "date", "export_amt", "import_amt", "export_price", "import_price"])
@@ -110,14 +110,18 @@ class UnipassData:
         threads = []
         with ThreadPoolExecutor(max_workers=thread_count) as executor:
             for nest in nested_list_hs_code:
-                threads.append(executor.submit(self.get_data, nest, self.date_range))
+                threads.append(executor.submit(self.get_data, nest))
             wait(threads)
 
         df_data = pd.concat([x.result() for x in threads])
 
         df_data = df_data.groupby(["code", "date"]).sum().reset_index()
         df_data = df_data.drop(columns=["statkor"])
-        df_data = pd.merge(left=df_data, right=self.df_info, on="code", how="left")
+
+        df_data = pd.merge(left=self.df_info[["sector", "sector_sub", "name", "code"]], right=df_data, on="code",
+                                 how="left")
+        df_data = df_data.rename(columns={"sector_x": "sector", "sector_sub_x": "secotor_sub"})
+        # df_data = df_data.drop(columns=["sector_y", "sector_sub_y"])
 
         self.df_data = pd.concat([self.df_data, df_data]).drop_duplicates(["sector", "code", "date"])
 
