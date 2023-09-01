@@ -14,7 +14,7 @@ import db
 
 class UnipassSpreadData:
 
-    def __init__(self, is_update_all=False):
+    def __init__(self):
 
         self.dict_info_raw = config.UNIPASS_INFO["raw"]
         self.df_info_raw = pd.DataFrame(columns=["sector", "sector_sub", "code", "name"])
@@ -92,11 +92,12 @@ class UnipassSpreadData:
         with open(r"D:\MyProject\MyData\MacroData\UnipassSpreadData.pickle", 'wb') as fw:
             pickle.dump(self.df_data, fw)
 
-        self.df_info_raw.to_sql(name='unipass_spread_info', con=db.conn, if_exists='replace', index=False, schema='financial_data')
+        self.df_info_spread.to_sql(name='unipass_spread_info', con=db.conn, if_exists='replace', index=False, schema='financial_data')
 
     def run(self):
 
         print("[STRAT]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)
         self.set_info()
+        self.get_data()
         self.save()
         print("[END]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)
