@@ -16,6 +16,7 @@
    "자일렌(크실렌)": {"sector": "정유화학", "sector_sub": "NCC", "code": "290243"},
    "폴리에틸렌(PE)": {"sector": "정유화학", "sector_sub": "합성수지", "code": "390120"},
    "폴리프로필렌": {"sector": "정유화학", "sector_sub": "합성수지", "code": "390210"},
+   "수산화칼륨": {"sector": "정유화학", "sector_sub": "합성수지", "code": "2815200000"},
    "SBR": {"sector": "정유화학", "sector_sub": "합성고무", "code": "400219"},
    "라텍스": {"sector": "정유화학", "sector_sub": "합성고무", "code": "400251"},
    "폴리아미드": {"sector": "정유화학", "sector_sub": "화섬", "code": "3908101000"},
