@@ -10,6 +10,8 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 import db
+import time
+import random
 
 
 class UnipassData:
@@ -60,8 +62,20 @@ class UnipassData:
                 end_yymm = self.date_range[-date_index]
                 print(name, start_yymm, end_yymm)
 
-                req_url = f'https://apis.data.go.kr/1220000/Itemtrade/getItemtradeList?serviceKey={config.API_KEY["UNIPASS"]}&strtYymm={start_yymm}&endYymm={end_yymm}&hsSgn={hs_code}'
-                r = requests.get(req_url)
+                while True:
+                    try:
+                        req_url = f'https://apis.data.go.kr/1220000/Itemtrade/getItemtradeList?serviceKey={config.API_KEY["UNIPASS"]}&strtYymm={start_yymm}&endYymm={end_yymm}&hsSgn={hs_code}'
+                        r = requests.get(req_url)
+                        time.sleep(random.uniform(0.5, 2))
+                        break
+                    except ConnectionResetError:
+                        time.sleep(random.uniform(0.5, 2))
+                        continue
+                    except ConnectionError:
+                        time.sleep(random.uniform(0.5, 2))
+                        continue
+                    except Exception as e:
+                        print("ERROR : ", e)
 
                 soup = BeautifulSoup(r.text, "xml")
                 items = soup.find_all("item")
