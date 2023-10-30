@@ -1,4 +1,6 @@
-from market_data import UpdateMarketData, UpdateDaily, MacroData, EtfData
+from market_data import (
+    UpdateKrxStockInfo, UpdateMarketData, UpdateDaily, MacroData, EtfData, UnipassData, UnipassSpreadData
+)
 from hot_issue import UpdateHotIssue
 from hot_theme import UpdateHotTheme
 from index_data.theme import ThemeIndex
@@ -8,7 +10,11 @@ import momentum.create_fields
 import lib
 
 
+
 def main():
+
+    # 업데이트: KRX 종목 정보
+    UpdateKrxStockInfo().run()
 
     # 업데이트: 종목 마켓데이터(key:cmp_cd)
     is_update_all = False
@@ -32,6 +38,10 @@ def main():
 
     # 업데이트: 매크로 데이터
     EtfData().run()
+
+    # 업데이트: 관세청 수출입 데이터
+    UnipassData(is_update_all=False).run()
+    UnipassSpreadData().run()
 
     # 업데이트: 모멘텀 데이터 생성 (Stock)
     momentum.create_fields.create_stock_field()
