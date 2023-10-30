@@ -27,7 +27,7 @@ class UpdateExpReturn:
         self.list_krx_date = list(XKRX.schedule.index)
 
         self.list_krx_date = list(filter(lambda x: x > datetime(2007, 1, 1), self.list_krx_date))
-        self.list_krx_date = list(filter(lambda x: x < datetime(2023, 8, 1), self.list_krx_date))
+        self.list_krx_date = list(filter(lambda x: x < datetime.today(), self.list_krx_date))
 
     def yymm_to_date(self, yymm):
 
@@ -163,7 +163,7 @@ class UpdateExpReturn:
         list_cmp_cd = sorted(df_froe["cmp_cd"].unique())
         dict_exp_return = {}
 
-        n = int(len(list_cmp_cd) / 5)
+        n = int(len(list_cmp_cd) / 4)
         nested_list_cmp_cd = [list_cmp_cd[i * n:(i + 1) * n] for i in range((len(list_cmp_cd) + n - 1) // n)]
 
         list_params = []
