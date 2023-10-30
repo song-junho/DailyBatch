@@ -56,10 +56,17 @@ class UnipassData:
 
             name = self.df_info.loc[self.df_info["code"] == hs_code, "name"].values[0]
 
-            for date_index in range(1, len(self.date_range), 12):
+            # 만약 해당 품목 데이터 수가 12개 미만 이라면, 전체 일자로 조회해서 쌓는다.
+            if len(self.df_data[self.df_data["name"] == name]) <= 12:
+                date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
+                date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), date_range))
+            else:
+                date_range = self.date_range
 
-                start_yymm = self.date_range[-date_index - 11]
-                end_yymm = self.date_range[-date_index]
+            for date_index in range(1, len(date_range), 12):
+
+                start_yymm = date_range[-len(date_range) if (-date_index - 11) < -len(date_range) else (-date_index - 11)]
+                end_yymm = date_range[-date_index]
                 print(name, start_yymm, end_yymm)
 
                 while True:
