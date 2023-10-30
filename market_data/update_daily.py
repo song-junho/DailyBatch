@@ -120,6 +120,8 @@ class UpdateDaily:
 
         # dict_df_stock_daily 데이터 병합
         for p_date in tqdm(self.dict_daily_deque.keys()):
+            if len(self.dict_daily_deque[p_date]) == 0:
+                continue
             df = pd.concat(self.dict_daily_deque[p_date]).drop_duplicates(["StockCode"])
             self.dict_df_stock_daily[p_date] = df
 
