@@ -25,7 +25,7 @@ class UpdateDaily:
         self.dict_df_stock_daily, self.dict_daily_deque, self.date_start = self.initialize_data(is_update_all)
 
         # 전종목 리스트
-        self.list_cmp_cd = stock_pack.set_all_cmp_cd(self.date_start)
+        self.list_cmp_cd = stock_pack.set_all_cmp_cd()
 
     def initialize_data(self, is_update_all):
 
