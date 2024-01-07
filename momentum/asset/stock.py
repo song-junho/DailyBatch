@@ -17,7 +17,7 @@ class Stock:
         with open(r"D:\MyProject\StockPrice\DictDfStock.pickle", 'rb') as fr:
             self.dict_df_stock = pickle.load(fr)
 
-        self.list_cmp_cd = set_all_cmp_cd(list_date_eom[0])
+        self.list_cmp_cd = set_all_cmp_cd()
 
         self.set_chg_period()
 
@@ -61,11 +61,15 @@ class Stock:
             # 2. 구간별 수익률
             df_stock["period_0to5"] = df_stock["Close"].pct_change(list_chg_period[0])
             for i, _ in enumerate(list_chg_period[:-1]):
+
                 col_nm = "period_" + str(list_chg_period[i]) + "to" + str(list_chg_period[i + 1])
                 period = list_chg_period[i + 1] - list_chg_period[i]
 
-                df_stock[col_nm] = 0
-                df_stock[col_nm][list_chg_period[i]:] = df_stock["Close"][:-list_chg_period[i]].pct_change(period)
+                if len(df_stock) < list_chg_period[i]:
+                    df_stock[col_nm] = 0
+                else:
+                    df_stock[col_nm] = 0
+                    df_stock[col_nm][list_chg_period[i]:] = df_stock["Close"][:-list_chg_period[i]].pct_change(period)
 
 
     def run(self, date_eom):
