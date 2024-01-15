@@ -43,7 +43,7 @@ class UpdateMarketData:
         self.end_date = datetime.datetime.today()
 
         # 상장종목 리스트
-        self.list_cmp_cd = stock_pack.set_all_cmp_cd(self.start_date, self.end_date)
+        self.list_cmp_cd = stock_pack.set_all_cmp_cd()
 
     def create_update_data(self) -> dict:
 
@@ -89,6 +89,7 @@ class UpdateMarketData:
                     time.sleep(random.uniform(self.sleep_range[0], self.sleep_range[1]))
                     try:
                         df = stock.get_market_ohlcv_by_date(start_date, end_date, cmp_cd, adjusted=True)
+                        df["거래대금"] = df["거래량"].astype('int64') * df["종가"]
                         df = numeric_pack.price_to_adj_price(df)  # 수정주가 변환
                         break
                     except:
