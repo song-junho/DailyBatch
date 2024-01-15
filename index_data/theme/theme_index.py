@@ -37,13 +37,10 @@ class ThemeIndex:
         self.dict_monthly_theme_index = {}
 
         # 테마 키워드
-        self.df_cmp_keyword = pd.read_excel(r"D:\MyProject\Notion\키워드_사전.xlsx", dtype="str")
+        self.df_cmp_keyword = pd.read_excel(r"D:\MyProject\MyData\Keyword\키워드_사전.xlsx", dtype="str")
 
         # 테마 리스트
         self.list_theme = self.set_list_theme()
-
-        # 테마-종목 key-value
-        self.dict_theme_list_cmp = self.set_dict_theme_list_cmp()
 
         # 한국장 영업일
         self.list_krx_date = XKRX.schedule.index
@@ -51,6 +48,9 @@ class ThemeIndex:
         # 가격 Dictionary 생성
         with open(r"D:\MyProject\StockPrice\DictDfStock.pickle", 'rb') as fr:
             self.dict_df_stock = pickle.load(fr)
+
+        # 테마-종목 key-value
+        self.dict_theme_list_cmp = self.set_dict_theme_list_cmp()
 
     def set_list_theme(self):
 
@@ -64,7 +64,8 @@ class ThemeIndex:
         dict_theme_list_cmp = {}
 
         for theme in self.list_theme:
-            dict_theme_list_cmp[theme] = self.df_cmp_keyword[self.df_cmp_keyword["keyword"] == theme]["cmp_cd"].to_list()
+            list_cmp_cd = self.df_cmp_keyword[self.df_cmp_keyword["keyword"] == theme]["cmp_cd"].to_list()
+            dict_theme_list_cmp[theme] = list(filter(lambda x: len(self.dict_df_stock[x]) > 0, list_cmp_cd))
 
         return dict_theme_list_cmp
 
