@@ -30,7 +30,7 @@ class UpdateHotTheme:
         del df_hot_theme
 
         # 6. 업종사전 생성
-        df_cmp_keyword = pd.read_excel(r"D:\MyProject\Notion\키워드_사전.xlsx", dtype="str")
+        df_cmp_keyword = pd.read_excel(r"D:\MyProject\MyData\Keyword\키워드_사전.xlsx", dtype="str")
 
         if is_update_all is True:
             df_hot_theme = pd.DataFrame()
