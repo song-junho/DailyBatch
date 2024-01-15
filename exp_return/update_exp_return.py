@@ -7,16 +7,23 @@ import pandas as pd
 import pickle
 import exchange_calendars as ecals
 from multiprocessing import Pool
+import numpy as np
 
 
 class UpdateExpReturn:
 
-    def __init__(self):
+    def __init__(self, dc_rate=1.05):
 
         list_item_cd = (211500)
+        self.dc_rate = dc_rate
 
-        q = 'SELECT * FROM financial_data.financial_statement_ttm' + ' where item_cd = {}'.format(list_item_cd)
-        self.df_fin_ttm = pd.read_sql_query(q, db.conn).sort_values(['cmp_cd', 'yymm', 'fin_typ', 'freq']).drop_duplicates(
+        # q = 'SELECT * FROM financial_data.financial_statement_ttm' + ' where item_cd = {}'.format(list_item_cd)
+        # self.df_fin_ttm = pd.read_sql_query(q, db.conn).sort_values(['cmp_cd', 'yymm', 'fin_typ', 'freq']).drop_duplicates(
+        #     ["term_typ", "cmp_cd", "item_cd", "yymm", "freq"], keep="last").reset_index(drop=True)
+
+        q = 'SELECT * FROM financial_data.financial_statement_q' + ' where item_cd = {}'.format(list_item_cd)
+        self.df_fin_q = pd.read_sql_query(q, db.conn).sort_values(
+            ['cmp_cd', 'yymm', 'fin_typ', 'freq']).drop_duplicates(
             ["term_typ", "cmp_cd", "item_cd", "yymm", "freq"], keep="last").reset_index(drop=True)
 
         with open(r'D:\MyProject\종목분석_환경\multiple_DB\dict_multiple_cmp_cd.pickle', 'rb') as fr:
@@ -83,10 +90,22 @@ class UpdateExpReturn:
         def rolling_avg(group_df):
             return group_df['val'].rolling(window=4, min_periods=1).mean()
 
-        list_cmp_cd = self.df_fin_ttm["cmp_cd"].unique()
+        def rolling_sum(group_df):
+            return group_df['val'].rolling(window=4, min_periods=1).sum()
+
+        def rolling_prod(group_df):
+
+            def prod(x):
+                return (np.prod(x) ** (1/10) - 1) * 100
+
+            return (group_df['val']/100 + 1).rolling(window=4*10, min_periods=1).apply(prod)
+
+        # list_cmp_cd = self.df_fin_ttm["cmp_cd"].unique()
+        list_cmp_cd = self.df_fin_q["cmp_cd"].unique()
         stack_ = []
 
-        df_roe = self.df_fin_ttm[self.df_fin_ttm["item_cd"] == 211500]
+        # df_roe = self.df_fin_ttm[self.df_fin_ttm["item_cd"] == 211500]
+        df_roe = self.df_fin_q[self.df_fin_q["item_cd"] == 211500]
         df_roe = df_roe[df_roe["freq"] == "yoy"]
         df_roe = df_roe[df_roe["yymm"] >= 200603]
 
@@ -99,8 +118,12 @@ class UpdateExpReturn:
             stack_.append(df)
 
         df_froe = pd.concat(stack_)
-        df_froe["rolling_avg"] = df_froe.groupby('cmp_cd', group_keys=False).apply(rolling_avg)
-        df_froe["f_roe"] = (df_froe["val"] / df_froe["rolling_avg"]) * df_froe["val"] - df_froe["std"]
+        # df_froe["rolling_avg"] = df_froe.groupby('cmp_cd', group_keys=False).apply(rolling_avg)
+        # df_froe["f_roe"] = (df_froe["val"] / df_froe["rolling_avg"]) * df_froe["val"] - df_froe["std"]
+
+        df_froe["avg_roe"] = df_froe.groupby('cmp_cd', group_keys=False).apply(rolling_prod)
+        df_froe["ttm_roe"] = df_froe.groupby('cmp_cd', group_keys=False).apply(rolling_sum)
+        df_froe["f_roe"] = (df_froe["avg_roe"] + df_froe["ttm_roe"]) / 2
 
         return df_froe
 
@@ -119,7 +142,7 @@ class UpdateExpReturn:
                 df_multiple_cmp = self.dict_multiple_cmp_cd[cmp_cd]
                 df_multiple_cmp = df_multiple_cmp[df_multiple_cmp["item_cd"] == 900005]
 
-            dict_data = {"date": [], "f_roe": [], "pbr": [], "exp_return": []}
+            dict_data = {"date": [], "avg_roe": [], "ttm_roe": [], "f_roe": [], "pbr": [], "exp_return": []}
             for t_date in self.list_krx_date:
 
                 yymm = self.date_to_yymm(t_date)
@@ -129,19 +152,20 @@ class UpdateExpReturn:
                 if len(df_froe_cmp.loc[df_froe_cmp["yymm"] == yymm]) == 0:
                     continue
 
-                if key_nm not in cache_table.keys():
-                    f_roe = df_froe_cmp.loc[df_froe_cmp["yymm"] == yymm, "f_roe"].values[0]
-                else:
-                    f_roe = cache_table[key_nm]
+                avg_roe = df_froe_cmp.loc[df_froe_cmp["yymm"] == yymm, "avg_roe"].values[0]
+                ttm_roe = df_froe_cmp.loc[df_froe_cmp["yymm"] == yymm, "ttm_roe"].values[0]
+                f_roe = df_froe_cmp.loc[df_froe_cmp["yymm"] == yymm, "f_roe"].values[0]
 
                 # 상장
                 if len(df_multiple_cmp.loc[df_multiple_cmp["date"] == t_date]) == 0:
                     continue
 
                 pbr = df_multiple_cmp.loc[df_multiple_cmp["date"] == t_date, "multiple"].values[0]
-                exp_return = f_roe / pbr
+                exp_return = (((1+f_roe/100) ** 10) / pbr / (self.dc_rate**10)) ** (1/10)
 
                 dict_data["date"].append(t_date)
+                dict_data["avg_roe"].append(avg_roe)
+                dict_data["ttm_roe"].append(ttm_roe)
                 dict_data["f_roe"].append(f_roe)
                 dict_data["pbr"].append(pbr)
                 dict_data["exp_return"].append(exp_return)
@@ -163,7 +187,7 @@ class UpdateExpReturn:
         list_cmp_cd = sorted(df_froe["cmp_cd"].unique())
         dict_exp_return = {}
 
-        n = int(len(list_cmp_cd) / 4)
+        n = int(len(list_cmp_cd) / 6)
         nested_list_cmp_cd = [list_cmp_cd[i * n:(i + 1) * n] for i in range((len(list_cmp_cd) + n - 1) // n)]
 
         list_params = []
