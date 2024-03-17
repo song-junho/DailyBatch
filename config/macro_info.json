@@ -215,10 +215,6 @@
             }
         }
     },
-    "ECONMIC_INFO" : {
-        "fixed_income": {
-        }
-    },
 
     "ECONOMIC_INFO" : {
         "global": {
@@ -410,63 +406,48 @@
                 ,"20120135_T41":  {"stat_cd": "901Y039" , "name": "과산화수소 (M/T)(출하량)", "freq": "m", "release": "eos"}
                 ,"20120135_T42":  {"stat_cd": "901Y039" , "name": "과산화수소 (M/T)(재고량)", "freq": "m", "release": "eos"}
                 ,"20120135_T00":  {"stat_cd": "901Y039" , "name": "과산화수소 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20120139_T41":  {"stat_cd": "901Y039" , "name": "안료 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20120139_T42":  {"stat_cd": "901Y039" , "name": "안료 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20120139_T00":  {"stat_cd": "901Y039" , "name": "안료 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20220201_T41":  {"stat_cd": "901Y039" , "name": "복합비료 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20220201_T42":  {"stat_cd": "901Y039" , "name": "복합비료 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20220201_T00":  {"stat_cd": "901Y039" , "name": "복합비료 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320301_T41":  {"stat_cd": "901Y039" , "name": "합성고무 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320301_T42":  {"stat_cd": "901Y039" , "name": "합성고무 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320301_T00":  {"stat_cd": "901Y039" , "name": "합성고무 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320302_T41":  {"stat_cd": "901Y039" , "name": "폴리에틸렌 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320302_T42":  {"stat_cd": "901Y039" , "name": "폴리에틸렌 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320302_T00":  {"stat_cd": "901Y039" , "name": "폴리에틸렌 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320303_T41":  {"stat_cd": "901Y039" , "name": "폴리스티렌 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320303_T42":  {"stat_cd": "901Y039" , "name": "폴리스티렌 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320303_T00":  {"stat_cd": "901Y039" , "name": "폴리스티렌 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320304_T41":  {"stat_cd": "901Y039" , "name": "ABS수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320304_T42":  {"stat_cd": "901Y039" , "name": "ABS수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320304_T00":  {"stat_cd": "901Y039" , "name": "ABS수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320306_T41":  {"stat_cd": "901Y039" , "name": "폴리프로필렌 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320306_T42":  {"stat_cd": "901Y039" , "name": "폴리프로필렌 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320306_T00":  {"stat_cd": "901Y039" , "name": "폴리프로필렌 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320307_T41":  {"stat_cd": "901Y039" , "name": "에폭시수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320307_T42":  {"stat_cd": "901Y039" , "name": "에폭시수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320307_T00":  {"stat_cd": "901Y039" , "name": "에폭시수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320308_T41":  {"stat_cd": "901Y039" , "name": "실리콘수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320308_T42":  {"stat_cd": "901Y039" , "name": "실리콘수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320308_T00":  {"stat_cd": "901Y039" , "name": "실리콘수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320309_T41":  {"stat_cd": "901Y039" , "name": "불포화폴리에스터수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320309_T42":  {"stat_cd": "901Y039" , "name": "불포화폴리에스터수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320309_T00":  {"stat_cd": "901Y039" , "name": "불포화폴리에스터수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320310_T41":  {"stat_cd": "901Y039" , "name": "선형폴리에스터수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320310_T42":  {"stat_cd": "901Y039" , "name": "선형폴리에스터수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320310_T00":  {"stat_cd": "901Y039" , "name": "선형폴리에스터수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320312_T41":  {"stat_cd": "901Y039" , "name": "폴리우레탄 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320312_T42":  {"stat_cd": "901Y039" , "name": "폴리우레탄 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320312_T00":  {"stat_cd": "901Y039" , "name": "폴리우레탄 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20320313_T41":  {"stat_cd": "901Y039" , "name": "엔지니어링플라스틱수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20320313_T42":  {"stat_cd": "901Y039" , "name": "엔지니어링플라스틱수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20320313_T00":  {"stat_cd": "901Y039" , "name": "엔지니어링플라스틱수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20420401_T41":  {"stat_cd": "901Y039" , "name": "농약 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20420401_T42":  {"stat_cd": "901Y039" , "name": "농약 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20420401_T00":  {"stat_cd": "901Y039" , "name": "농약 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20320315_T41":  {"stat_cd": "901Y039" , "name": "복합비료 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20320315_T42":  {"stat_cd": "901Y039" , "name": "복합비료 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20320315_T00":  {"stat_cd": "901Y039" , "name": "복합비료 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220202_T41":  {"stat_cd": "901Y039" , "name": "합성고무 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220202_T42":  {"stat_cd": "901Y039" , "name": "합성고무 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220202_T00":  {"stat_cd": "901Y039" , "name": "합성고무 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220203_T41":  {"stat_cd": "901Y039" , "name": "폴리에틸렌 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220203_T42":  {"stat_cd": "901Y039" , "name": "폴리에틸렌 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220203_T00":  {"stat_cd": "901Y039" , "name": "폴리에틸렌 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220204_T41":  {"stat_cd": "901Y039" , "name": "폴리스티렌 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220204_T42":  {"stat_cd": "901Y039" , "name": "폴리스티렌 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220204_T00":  {"stat_cd": "901Y039" , "name": "폴리스티렌 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220205_T41":  {"stat_cd": "901Y039" , "name": "ABS수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220205_T42":  {"stat_cd": "901Y039" , "name": "ABS수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220205_T00":  {"stat_cd": "901Y039" , "name": "ABS수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220207_T41":  {"stat_cd": "901Y039" , "name": "폴리프로필렌 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220207_T42":  {"stat_cd": "901Y039" , "name": "폴리프로필렌 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220207_T00":  {"stat_cd": "901Y039" , "name": "폴리프로필렌 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220208_T41":  {"stat_cd": "901Y039" , "name": "에폭시수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220208_T42":  {"stat_cd": "901Y039" , "name": "에폭시수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220208_T00":  {"stat_cd": "901Y039" , "name": "에폭시수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220210_T41":  {"stat_cd": "901Y039" , "name": "불포화폴리에스터수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220210_T42":  {"stat_cd": "901Y039" , "name": "불포화폴리에스터수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220210_T00":  {"stat_cd": "901Y039" , "name": "불포화폴리에스터수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220211_T41":  {"stat_cd": "901Y039" , "name": "선형폴리에스터수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220211_T42":  {"stat_cd": "901Y039" , "name": "선형폴리에스터수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220211_T00":  {"stat_cd": "901Y039" , "name": "선형폴리에스터수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220213_T41":  {"stat_cd": "901Y039" , "name": "폴리우레탄 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220213_T42":  {"stat_cd": "901Y039" , "name": "폴리우레탄 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220213_T00":  {"stat_cd": "901Y039" , "name": "폴리우레탄 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20220214_T41":  {"stat_cd": "901Y039" , "name": "엔지니어링플라스틱수지 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20220214_T42":  {"stat_cd": "901Y039" , "name": "엔지니어링플라스틱수지 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20220214_T00":  {"stat_cd": "901Y039" , "name": "엔지니어링플라스틱수지 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
+                ,"20320317_T41":  {"stat_cd": "901Y039" , "name": "농약 (M/T)(출하량)", "freq": "m", "release": "eos"}
+                ,"20320317_T42":  {"stat_cd": "901Y039" , "name": "농약 (M/T)(재고량)", "freq": "m", "release": "eos"}
+                ,"20320317_T00":  {"stat_cd": "901Y039" , "name": "농약 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
                 ,"20420402_T41":  {"stat_cd": "901Y039" , "name": "도료 (㎘)(출하량)", "freq": "m", "release": "eos"}
                 ,"20420402_T42":  {"stat_cd": "901Y039" , "name": "도료 (㎘)(재고량)", "freq": "m", "release": "eos"}
                 ,"20420402_T00":  {"stat_cd": "901Y039" , "name": "도료 (㎘)(재고/출하)", "freq": "m", "release": "eos"}
                 ,"20420403_T41":  {"stat_cd": "901Y039" , "name": "시너 (㎘)(출하량)", "freq": "m", "release": "eos"}
                 ,"20420403_T42":  {"stat_cd": "901Y039" , "name": "시너 (㎘)(재고량)", "freq": "m", "release": "eos"}
                 ,"20420403_T00":  {"stat_cd": "901Y039" , "name": "시너 (㎘)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20420404_T41":  {"stat_cd": "901Y039" , "name": "인쇄잉크 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20420404_T42":  {"stat_cd": "901Y039" , "name": "인쇄잉크 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20420404_T00":  {"stat_cd": "901Y039" , "name": "인쇄잉크 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20420406_T41":  {"stat_cd": "901Y039" , "name": "비누 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20420406_T42":  {"stat_cd": "901Y039" , "name": "비누 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20420406_T00":  {"stat_cd": "901Y039" , "name": "비누 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
-                ,"20420408_T41":  {"stat_cd": "901Y039" , "name": "치약 (M/T)(출하량)", "freq": "m", "release": "eos"}
-                ,"20420408_T42":  {"stat_cd": "901Y039" , "name": "치약 (M/T)(재고량)", "freq": "m", "release": "eos"}
-                ,"20420408_T00":  {"stat_cd": "901Y039" , "name": "치약 (M/T)(재고/출하)", "freq": "m", "release": "eos"}
                 ,"20420416_T41":  {"stat_cd": "901Y039" , "name": "산화방지제(고무·플라스틱용) (M/T)(출하량)", "freq": "m", "release": "eos"}
                 ,"20420416_T42":  {"stat_cd": "901Y039" , "name": "산화방지제(고무·플라스틱용) (M/T)(재고량)", "freq": "m", "release": "eos"}
                 ,"20420416_T00":  {"stat_cd": "901Y039" , "name": "산화방지제(고무·플라스틱용) (M/T)(재고/출하)", "freq": "m", "release": "eos"}
