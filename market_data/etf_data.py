@@ -46,10 +46,13 @@ class EtfData:
         df = yf.Ticker(ticker).history(period="max")
 
         # 전처리
-        df = df.reset_index(drop=False)
-        df["Date"] = pd.to_datetime(df["Date"].dt.strftime("%Y-%m-%d"))
-        df = df[["Date", "Close"]].rename(columns={"Date": "date", "Close": "val"})
-        df = df.set_index("date")
+        try:
+            df = df.reset_index(drop=False)
+            df["Date"] = pd.to_datetime(df["Date"].dt.strftime("%Y-%m-%d"))
+            df = df[["Date", "Close"]].rename(columns={"Date": "date", "Close": "val"})
+            df = df.set_index("date")
+        except:
+            print(ticker)
 
         return df
 

@@ -83,10 +83,15 @@ class MacroData:
             df = yf.Ticker(ticker).history(period="max")
 
             # 전처리
-            df = df.reset_index(drop=False)
-            df["Date"] = pd.to_datetime(df["Date"].dt.strftime("%Y-%m-%d"))
-            df = df[["Date", "Close"]].rename(columns={"Date": "date", "Close": "val"})
-            df = df.set_index("date")
+            try:
+                df = df.reset_index(drop=False)
+                df["Date"] = pd.to_datetime(df["Date"].dt.strftime("%Y-%m-%d"))
+                df = df[["Date", "Close"]].rename(columns={"Date": "date", "Close": "val"})
+                df = df.set_index("date")
+
+            except:
+                print(ticker)
+                pass
 
         elif ticker_info["release"] == "eos":
 
@@ -134,6 +139,10 @@ class MacroData:
                                                         통계항목코드2=type_key, 주기="M",
                                                         검색시작일자=start_date, 검색종료일자=end_date)
 
+                    if df is None:
+                        print(ticker)
+                        return df
+
                     df = df[["시점", "값"]].rename(columns={"시점": "date", "값": "val"})
 
                     df["val"] = df["val"].astype("float")
@@ -143,6 +152,9 @@ class MacroData:
                 df = self.ecos.get_statistic_search(통계표코드=ticker_info["stat_cd"], 통계항목코드1=ticker,
                                                     주기=ticker_info["freq"].upper(),
                                                     검색시작일자=start_date, 검색종료일자=end_date)
+                if df is None:
+                    print(ticker)
+                    return df
 
                 df = df[["시점", "값"]].rename(columns={"시점": "date", "값": "val"})
 
