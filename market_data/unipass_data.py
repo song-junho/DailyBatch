@@ -19,7 +19,7 @@ class UnipassData:
     def __init__(self, is_update_all=False):
 
         self.dict_info = config.UNIPASS_INFO["raw"]
-        self.df_info = pd.DataFrame(columns=["sector", "sector_sub", "code", "name"])
+        self.df_info = pd.DataFrame(columns=["sector", "sector_sub", "code", "name", "main_type"])
 
         if is_update_all:
             self.date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
@@ -35,12 +35,12 @@ class UnipassData:
     def set_info(self):
 
         self.df_info = pd.DataFrame(self.dict_info).T.reset_index()
-        self.df_info = self.df_info.rename(columns={"index": "name"})[["sector", "sector_sub", "code", "name"]]
+        self.df_info = self.df_info.rename(columns={"index": "name"})[["sector", "sector_sub", "code", "name", "main_type"]]
 
     def get_data(self, list_hs_code):
 
         df_trade_data = pd.DataFrame(
-            columns=["code", "statkor", "date", "export_amt", "import_amt", "export_price", "import_price"])
+            columns=["code", "statkor", "date", "export_amt", "import_amt", "export_price", "import_price", "maint_type"])
 
         dict_trade_data = {
             "code": []
@@ -50,11 +50,13 @@ class UnipassData:
             , "import_amt": []
             , "export_price": []
             , "import_price": []
+            , "main_type": []
         }
 
         for hs_code in tqdm(list_hs_code):
 
             name = self.df_info.loc[self.df_info["code"] == hs_code, "name"].values[0]
+            main_type = self.df_info.loc[self.df_info["code"] == hs_code, "main_type"].values[0]
 
             # 만약 해당 품목 데이터 수가 12개 미만 이라면, 전체 일자로 조회해서 쌓는다.
             if len(self.df_data[self.df_data["name"] == name]) <= 12:
@@ -114,6 +116,7 @@ class UnipassData:
                     dict_trade_data["import_amt"].append(impdlr)
                     dict_trade_data["export_price"].append(exp_price)
                     dict_trade_data["import_price"].append(imp_price)
+                    dict_trade_data["main_type"].append(main_type)
 
         df_trade_data = pd.concat([df_trade_data, pd.DataFrame(dict_trade_data)])
 
@@ -139,7 +142,7 @@ class UnipassData:
         df_data = df_data.groupby(["code", "date"]).sum().reset_index()
         df_data = df_data.drop(columns=["statkor"])
 
-        df_data = pd.merge(left=self.df_info[["sector", "sector_sub", "name", "code"]], right=df_data, on="code",
+        df_data = pd.merge(left=self.df_info[["sector", "sector_sub", "name", "code", "main_type"]], right=df_data, on="code",
                                  how="left")
         df_data = df_data.rename(columns={"sector_x": "sector", "sector_sub_x": "secotor_sub"})
         # df_data = df_data.drop(columns=["sector_y", "sector_sub_y"])
