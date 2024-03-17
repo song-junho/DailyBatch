@@ -17,7 +17,7 @@ class UnipassSpreadData:
     def __init__(self):
 
         self.dict_info_raw = config.UNIPASS_INFO["raw"]
-        self.df_info_raw = pd.DataFrame(columns=["sector", "sector_sub", "code", "name"])
+        self.df_info_raw = pd.DataFrame(columns=["sector", "sector_sub", "code", "name", "main_type"])
 
         self.dict_info_spread = config.UNIPASS_INFO["spread"]
         self.df_info_spread = pd.DataFrame(columns=["sector", "sector_sub", "name_raw", "name_prd", "type_raw", "type_prd"])
@@ -29,7 +29,7 @@ class UnipassSpreadData:
     def set_info(self):
 
         self.df_info_raw = pd.DataFrame(self.dict_info_raw).T.reset_index()
-        self.df_info_raw = self.df_info_raw.rename(columns={"index": "name"})[["sector", "sector_sub", "code", "name"]]
+        self.df_info_raw = self.df_info_raw.rename(columns={"index": "name"})[["sector", "sector_sub", "code", "name", "main_type"]]
 
         self.df_info_spread = pd.DataFrame(self.dict_info_spread).T.reset_index()
         self.df_info_spread = self.df_info_spread.rename(columns={"index": "name"})[["sector", "sector_sub", "name_raw", "name_prd", "type_raw", "type_prd"]]
