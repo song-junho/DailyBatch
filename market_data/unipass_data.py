@@ -20,6 +20,7 @@ class UnipassData:
 
         self.dict_info = config.UNIPASS_INFO["raw"]
         self.df_info = pd.DataFrame(columns=["sector", "sector_sub", "code", "name", "main_type"])
+        self.is_update_all = is_update_all
 
         if is_update_all:
             self.date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
@@ -59,11 +60,15 @@ class UnipassData:
             main_type = self.df_info.loc[self.df_info["code"] == hs_code, "main_type"].values[0]
 
             # 만약 해당 품목 데이터 수가 12개 미만 이라면, 전체 일자로 조회해서 쌓는다.
-            if len(self.df_data[self.df_data["name"] == name]) <= 12:
+            if self.is_update_all:
                 date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
                 date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), date_range))
             else:
-                date_range = self.date_range
+                if len(self.df_data[self.df_data["name"] == name]) <= 12:
+                    date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
+                    date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), date_range))
+                else:
+                    date_range = self.date_range
 
             for date_index in range(1, len(date_range), 12):
 
