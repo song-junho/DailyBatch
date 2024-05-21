@@ -42,7 +42,7 @@
    "가성소다": {"sector": "정유화학", "sector_sub": "정밀화학원료", "code": "2815120000", "main_type": "export"},
    "ECH(에피클로로히드린)": {"sector": "정유화학", "sector_sub": "정밀화학원료", "code": "2910300000", "main_type": "export"},
    "NF3": {"sector": "정유화학", "sector_sub": "정밀화학원료", "code": "2812909000", "main_type": "export"},
-   "PPG(폴리프로필렌 글리톨)": {"sector": "정유화학", "sector_sub": "정밀화학원료", "code": "3907202000", "main_type": "export"},
+   "PPG(폴리프로필렌 글리톨)": {"sector": "정유화학", "sector_sub": "정밀화학원료", "code": "3907292000", "main_type": "export"},
    "열연": {"sector": "철강", "sector_sub": "열연", "code": "7208399000", "main_type": "export"},
    "철광석": {"sector": "철강", "sector_sub": "열연", "code": "2601119000", "main_type": "import"},
    "유연탄": {"sector": "철강", "sector_sub": "열연", "code": "2701129090", "main_type": "import"},
