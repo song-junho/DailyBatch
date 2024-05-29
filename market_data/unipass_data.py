@@ -20,25 +20,41 @@ class UnipassData:
 
         self.dict_info = config.UNIPASS_INFO["raw"]
         self.df_info = pd.DataFrame(columns=["sector", "sector_sub", "code", "name", "main_type"])
+        self.df_info_class = pd.DataFrame(columns=["연도", "세번", "세번10단위품명", "중분류코드", "중분류명", "소분류코드", "소분류명", "세분류코드", "세분류명"])
         self.is_update_all = is_update_all
 
         if is_update_all:
             self.date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
             self.date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), self.date_range))
-            self.df_data = pd.DataFrame()
+            self.df_data_hs = pd.DataFrame()
+            self.df_data_cls = pd.DataFrame()
         else:
             start_date = datetime.today() - relativedelta(years=1)
             self.date_range = pd.date_range(start_date, datetime.today(), freq='M')
             self.date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), self.date_range))
-            self.df_data = self.load()  # 기 데이터 로드
+            self.df_data_hs = self.load_data_hs()  # 기 데이터 로드
 
+            self.df_data_cls = self.load_data_cls()  # 기 데이터 로드
+
+    def set_info_class(self):
+
+        df_info_class = pd.read_excel(r"D:\MyProject\MyData\관세청조회코드_v1.1.xlsx", sheet_name="성질통합분류코드")
+        df_info_class.columns = df_info_class.loc[3]
+        df_info_class = df_info_class.loc[4:].reset_index(drop=True)
+        self.df_info_class = df_info_class[["연도", "세번", "세번10단위품명", "중분류코드", "중분류명", "소분류코드", "소분류명", "세분류코드", "세분류명"]]
 
     def set_info(self):
 
         self.df_info = pd.DataFrame(self.dict_info).T.reset_index()
         self.df_info = self.df_info.rename(columns={"index": "name"})[["sector", "sector_sub", "code", "name", "main_type"]]
 
-    def get_data(self, list_hs_code):
+    def get_data_by_hs_code(self, list_hs_code):
+        """
+        HS CODE 로 데이터를 쌓는 함수
+
+        :param list_hs_code:
+        :return:
+        """
 
         df_trade_data = pd.DataFrame(
             columns=["code", "statkor", "date", "export_amt", "import_amt", "export_price", "import_price", "maint_type"])
@@ -64,7 +80,7 @@ class UnipassData:
                 date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
                 date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), date_range))
             else:
-                if len(self.df_data[self.df_data["name"] == name]) <= 12:
+                if len(self.df_data_hs[self.df_data_hs["name"] == name]) <= 12:
                     date_range = pd.date_range("2000-01-01", datetime.today(), freq='M')
                     date_range = list(map(lambda x: int(str(x.year) + str(x.month).zfill(2)), date_range))
                 else:
@@ -127,49 +143,138 @@ class UnipassData:
 
         return df_trade_data
 
-    def collect(self):
+    def get_data_by_cls_code(self, list_cls_cd):
+        """
+        CLS CODE 로 데이터를 쌓는 함수
+        :return:
+        """
 
-        thread_count = 10
-        list_hs_code = self.df_info["code"].to_list()
+        date_range = self.date_range
 
-        list_hs_code = sorted(list_hs_code)
-        n = int(len(list_hs_code) / thread_count)
-        nested_list_hs_code = [list_hs_code[i * n:(i + 1) * n] for i in range((len(list_hs_code) + n - 1) // n)]
+        q_ = []
+        for imexTpcd in [1, 2]:
 
-        threads = []
-        with ThreadPoolExecutor(max_workers=thread_count) as executor:
-            for nest in nested_list_hs_code:
-                threads.append(executor.submit(self.get_data, nest))
-            wait(threads)
+            for imexTmprUnfcClsfCd in tqdm(list_cls_cd):
 
-        df_data = pd.concat([x.result() for x in threads])
+                for date_index in (range(1, len(date_range), 12)):
 
-        df_data = df_data.groupby(["code", "date"]).sum().reset_index()
-        df_data = df_data.drop(columns=["statkor"])
+                    start_yymm = date_range[-len(date_range) if (-date_index - 11) < -len(date_range) else (-date_index - 11)]
+                    end_yymm = date_range[-date_index]
+                    print(imexTmprUnfcClsfCd, start_yymm, end_yymm)
 
-        df_data = pd.merge(left=self.df_info[["sector", "sector_sub", "name", "code", "main_type"]], right=df_data, on="code",
-                                 how="left")
-        df_data = df_data.rename(columns={"sector_x": "sector", "sector_sub_x": "secotor_sub"})
-        # df_data = df_data.drop(columns=["sector_y", "sector_sub_y"])
+                    while True:
+                        try:
+                            req_url = f'http://apis.data.go.kr/1220000/newtempertrade/getNewtempertradeList?serviceKey={config.API_KEY["UNIPASS"]}&strtYymm={start_yymm}&endYymm={end_yymm}&imexTpcd={imexTpcd}&imexTmprUnfcClsfCd={imexTmprUnfcClsfCd}'
+                            r = requests.get(req_url)
+                            time.sleep(random.uniform(0.5, 2))
+                            break
+                        except ConnectionResetError:
+                            time.sleep(random.uniform(0.5, 2))
+                            continue
+                        except ConnectionError:
+                            time.sleep(random.uniform(0.5, 2))
+                            continue
+                        except Exception as e:
+                            print("ERROR : ", e)
 
-        self.df_data = pd.concat([self.df_data, df_data]).drop_duplicates(["sector", "code", "date"])
+                    soup = BeautifulSoup(r.text, "xml")
+                    items = soup.find_all("item")
 
-    def load(self):
+                    for item in items:
 
-        with open(r"D:\MyProject\MyData\MacroData\UnipassData.pickle", 'rb') as fr:
+                        statkor = item.find("statCdCntnKor1").get_text()
+                        year = item.find("year").get_text()
+                        godsCd = item.find("godsCd").get_text()
+                        godsKor = item.find("godsKor").get_text()
+                        expdlr = int(item.find("dlr").get_text())
+                        wgt = int(item.find("wgt").get_text())
+
+                        # 100만 달러 미만 저장 x
+                        if int(expdlr) > 1000000:
+                            q_.append(pd.DataFrame(data=[[imexTpcd, statkor, year, godsCd, godsKor, expdlr, wgt]]))
+
+        df_res = pd.concat(q_)
+        df_res.columns = ["imexTpcd", "dept", "date", "godsCd", "godsKor", "dlr", "wgt"]
+        return df_res
+
+    def collect(self, data_type='HS'):
+
+        if data_type == "HS":
+
+            thread_count = 10
+            list_hs_code = self.df_info["code"].to_list()
+
+            list_hs_code = sorted(list_hs_code)
+            n = int(len(list_hs_code) / thread_count)
+            nested_list_hs_code = [list_hs_code[i * n:(i + 1) * n] for i in range((len(list_hs_code) + n - 1) // n)]
+
+            threads = []
+            with ThreadPoolExecutor(max_workers=thread_count) as executor:
+                for nest in nested_list_hs_code:
+                    threads.append(executor.submit(self.get_data_by_hs_code, nest))
+                wait(threads)
+
+            df_data = pd.concat([x.result() for x in threads])
+
+            df_data = df_data.groupby(["code", "date"]).sum().reset_index()
+            df_data = df_data.drop(columns=["statkor"])
+
+            df_data = pd.merge(left=self.df_info[["sector", "sector_sub", "name", "code", "main_type"]], right=df_data, on="code",
+                                     how="left")
+            df_data = df_data.rename(columns={"sector_x": "sector", "sector_sub_x": "secotor_sub"})
+
+            self.df_data_hs = pd.concat([self.df_data_hs, df_data]).drop_duplicates(["sector", "code", "date"])
+
+        elif data_type == "CLS":
+
+            thread_count = 8
+            lis_cls_cd = list(self.df_info_class["중분류코드"].unique())
+
+            lis_cls_cd = sorted(lis_cls_cd)
+            n = int(len(lis_cls_cd) / thread_count)
+            nested_lis_cls_cd = [lis_cls_cd[i * n:(i + 1) * n] for i in range((len(lis_cls_cd) + n - 1) // n)]
+
+            threads = []
+            with ThreadPoolExecutor(max_workers=thread_count) as executor:
+                for nest in nested_lis_cls_cd:
+                    threads.append(executor.submit(self.get_data_by_cls_code, nest))
+                wait(threads)
+
+            df_data = pd.concat([x.result() for x in threads])
+
+            self.df_data_cls = pd.concat([self.df_data_cls, df_data]).drop_duplicates(["imexTpcd", "dept", "date", "godsCd"])
+
+    def load_data_hs(self):
+
+        with open(r"D:\MyProject\MyData\MacroData\UnipassDataHs.pickle", 'rb') as fr:
             return pickle.load(fr)
 
-    def save(self):
+    def load_data_cls(self):
 
-        with open(r"D:\MyProject\MyData\MacroData\UnipassData.pickle", 'wb') as fw:
-            pickle.dump(self.df_data, fw)
+        with open(r"D:\MyProject\MyData\MacroData\UnipassDataCls.pickle", 'rb') as fr:
+            return pickle.load(fr)
 
-        self.df_info.to_sql(name='unipass_info', con=db.conn, if_exists='replace', index=False, schema='financial_data')
+    def save(self, data_type='HS'):
+
+        if data_type == 'HS':
+
+            with open(r"D:\MyProject\MyData\MacroData\UnipassDataHs.pickle", 'wb') as fw:
+                pickle.dump(self.df_data_hs, fw)
+            self.df_info.to_sql(name='unipass_info', con=db.conn, if_exists='replace', index=False,
+                                schema='financial_data')
+        elif data_type == 'CLS':
+
+            with open(r"D:\MyProject\MyData\MacroData\UnipassDataCls.pickle", 'wb') as fw:
+                pickle.dump(self.df_data_cls, fw)
 
     def run(self):
 
         print("[STRAT]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)
         self.set_info()
-        self.collect()
-        self.save()
+        self.set_info_class()
+        self.collect(data_type="HS")
+        self.save(data_type='HS')
+
+        self.collect(data_type="CLS")
+        self.save(data_type='CLS')
         print("[END]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)

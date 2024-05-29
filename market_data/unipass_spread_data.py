@@ -84,7 +84,7 @@ class UnipassSpreadData:
 
     def load(self):
 
-        with open(r"D:\MyProject\MyData\MacroData\UnipassData.pickle", 'rb') as fr:
+        with open(r"D:\MyProject\MyData\MacroData\UnipassDataHs.pickle", 'rb') as fr:
             return pickle.load(fr)
 
     def save(self):
