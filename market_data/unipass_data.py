@@ -163,22 +163,35 @@ class UnipassData:
                     print(imexTmprUnfcClsfCd, start_yymm, end_yymm)
 
                     while True:
+                        count_n = 0
                         try:
                             req_url = f'http://apis.data.go.kr/1220000/newtempertrade/getNewtempertradeList?serviceKey={config.API_KEY["UNIPASS"]}&strtYymm={start_yymm}&endYymm={end_yymm}&imexTpcd={imexTpcd}&imexTmprUnfcClsfCd={imexTmprUnfcClsfCd}'
                             r = requests.get(req_url)
                             time.sleep(random.uniform(0.5, 2))
-                            break
+
+                            soup = BeautifulSoup(r.text, "xml")
+                            items = soup.find_all("item")
+
+                            # item 개수가 0개, 2001년 이후 기간, 재시도 횟수 5회 미만인 경우. 진행
+                            if (len(items) == 0) & (date_index//100 > 2001) & (count_n < 5):
+                                print("NoItem", req_url)
+                                count_n += 1
+
+                                time.sleep(random.uniform(0.5, 2))
+                                continue
+                            else:
+                                break
                         except ConnectionResetError:
-                            time.sleep(random.uniform(0.5, 2))
+                            time.sleep(random.uniform(0.5, 5))
                             continue
                         except ConnectionError:
-                            time.sleep(random.uniform(0.5, 2))
+                            time.sleep(random.uniform(0.5, 5))
                             continue
                         except Exception as e:
                             print("ERROR : ", e)
 
-                    soup = BeautifulSoup(r.text, "xml")
-                    items = soup.find_all("item")
+                    # soup = BeautifulSoup(r.text, "xml")
+                    # items = soup.find_all("item")
 
                     for item in items:
 
@@ -190,7 +203,7 @@ class UnipassData:
                         wgt = int(item.find("wgt").get_text())
 
                         # 100만 달러 미만 저장 x
-                        if int(expdlr) > 1000000:
+                        if int(expdlr) > (1000 * 1000):
                             q_.append(pd.DataFrame(data=[[imexTpcd, statkor, year, godsCd, godsKor, expdlr, wgt]]))
 
         df_res = pd.concat(q_)
@@ -227,7 +240,7 @@ class UnipassData:
 
         elif data_type == "CLS":
 
-            thread_count = 8
+            thread_count = 5
             lis_cls_cd = list(self.df_info_class["중분류코드"].unique())
 
             lis_cls_cd = sorted(lis_cls_cd)
@@ -272,8 +285,8 @@ class UnipassData:
         print("[STRAT]|" + datetime.today().strftime("%Y-%m-%d %H:%M:%S") + "|" + self.__class__.__name__)
         self.set_info()
         self.set_info_class()
-        self.collect(data_type="HS")
-        self.save(data_type='HS')
+        # self.collect(data_type="HS")
+        # self.save(data_type='HS')
 
         self.collect(data_type="CLS")
         self.save(data_type='CLS')
