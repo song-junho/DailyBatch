@@ -143,7 +143,7 @@ class ThemeIndex:
     def make_theme_index(self):
 
         list_theme_t = self.list_theme
-        n = int(len(list_theme_t) / 10)
+        n = int(len(list_theme_t) / 8)
         list_theme_t = [list_theme_t[i * n:(i + 1) * n] for i in range((len(list_theme_t) + n - 1) // n)]
         p = Pool(len(list_theme_t))
 
