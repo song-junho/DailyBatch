@@ -49,10 +49,13 @@ class UpdateMarketData:
 
         def mutithreading(list_cmp_cd):
 
-            start_date = self.start_date.strftime("%Y-%m-%d")
+            # start_date = self.dict_df_stock[cmp_cd]
+            # start_date = self.start_date.strftime("%Y-%m-%d")
             end_date = self.end_date.strftime("%Y-%m-%d")
 
             for cmp_cd in tqdm(list_cmp_cd):
+
+                start_date = self.dict_df_stock[cmp_cd].index[-1].strftime("%Y-%m-%d")
 
                 # 1. 시가총액 데이터
                 df_market_cap = pd.DataFrame()
