@@ -52,8 +52,13 @@ class Stock:
         for cmp_cd in tqdm(self.list_cmp_cd):
 
             # call by ref -> self.dict_df_stock 변경됨
+            try:
+                df_stock = self.dict_df_stock[cmp_cd]
+            except:
+                print(cmp_cd)
+                continue
+
             # 1. 누적 기간별 수익률
-            df_stock = self.dict_df_stock[cmp_cd]
             for chg_period in list_chg_period:
                 col_nm = "chg_" + str(chg_period)
                 df_stock[col_nm] = df_stock["Close"].pct_change(chg_period)
